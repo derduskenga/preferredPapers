@@ -1,0 +1,13 @@
+@(field: Field, label: String = "CHANGEME", help: String = "",divClass:String="col-sm-10")
+<div class="form-group @if(field.hasErrors) {has-error}">
+  <div class="col-sm-2">@label</div>
+  <div id="" class="@divClass" >   
+      <input
+	type="file"
+	name="@field.name"
+	id="@field.id"
+	value="@field.value.getOrElse("")"/>     
+    <span class="help-block">@help</span>
+    <span class="help-block">@{field.error.map { error => error.message }}</span>
+  </div>
+</div>

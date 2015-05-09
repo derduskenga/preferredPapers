@@ -1,0 +1,140 @@
+@(admin:models.admin.adminmodels.AdminUser)
+@import helper._
+@import fieldtemplates._
+
+@adminmain("Timely Essay | My Profile"){
+ <div class="col-xs-9">
+ @if(admin!=null){
+      <div id="admin-profile">
+	  <h4>My Profile</h4>
+	  <table>
+	    <tr>    
+	      <td align="right">First name</td>
+	      <td>@admin.first_name</td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Last name</td>
+	      <td>@admin.last_name</td>
+	    </tr>
+
+	    <tr>
+	      <td align="right">Email/Login</td>
+	      <td>@admin.email</td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Password</td>
+	      <td>
+		* * * * * 
+		<a href="#" tabindex="0" class="btn btn-sm btn-primary" role="button" data-toggle="popover" id="change-password"
+		  data-trigger="click focus" title="<strong>Change password</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span align='right'><a href='#' id='close-popover'><i class='fa fa-times'></i>
+</></span>" data-content="<form id='change_password_form' name='change_password_form' method='post' action=''>
+		  <div id='password_change_response'>  </div>
+		  <script>$('#change_password_form').bootstrapValidator({
+		    message: 'This value is not valid',
+		    live: 'enabled',
+		    
+		    feedbackIcons: {
+			valid: 'fa fa-check',
+			invalid: 'fa fa-times',
+			validating: 'fa fa-refresh'
+		    },
+		  fields:{
+	    r_password:{
+	      validators:{
+		notEmpty:{
+		  message:'Current password is required'
+		}
+	      }
+	    },
+	    new_password:{
+	      validators:{
+		notEmpty:{
+		  message:'New password is required'
+		},
+		stringLength:{
+			min: 5,
+			message: ''
+		},
+		identical:{
+		  field: 'confirm_password',
+		  message: ''
+		}
+	      }
+	    },
+	      confirm_password:{
+	      validators:{
+		notEmpty:{
+		  message:''
+		},
+		identical:{
+		  field: 'new_password',
+		  message: ''
+		}
+	      }
+	    }  
+	  }
+	  });
+	  $('#change-password-btn').click(function(event){
+	    event.preventDefault();
+	    var current_password = $('#r_password').val();
+	    var new_password = $('#new_password').val();
+	    $('#change-password-loading-gif').removeClass('hidden');
+	    $.post('/changepassword',{current_password:current_password,new_password:new_password}, function(data){		
+	      if(data['success'] == 1){
+		$('#password_change_response').removeClass('alert-danger').addClass('alert-success');
+		$('#password_change_response').text(data['message']);
+		$('#r_password').val('');
+		$('#new_password').val('');
+		$('#confirm_password').val('');
+		$('#change-password-loading-gif').addClass('hidden');
+	      }else{
+		$('#password_change_response').addClass('alert-danger');
+		$('#password_change_response').text(data['message']);
+		$('#r_password').val('');
+		$('#new_password').val('');
+		$('#confirm_password').val('');
+		$('#change-password-loading-gif').addClass('hidden');
+	      }
+	    },'json');
+	    
+	  });
+	  
+	  $('#close-popover').click(function(event){
+	    event.preventDefault();
+	    $('#change-password').popover('hide');
+	  });
+	</script>
+		  <div>Current password:<input type='password' id='r_password' class='form-control input-sm' name='r_password'/> </div> <div>New password:<input class='form-control input-sm' type='password' id='new_password' name='new_password' placeholder='(At least 5 characters Long)'/> </div> <div>Confirm password:<input class='form-control input-sm' type='password' id='confirm_password' name='confirm_password'/></div><br><div class='form-group'><button type='submit' class='btn btn-primary' id='change-password-btn'> Submit password </button> <span class='hidden' id='change-password-loading-gif'><img src='@routes.Assets.at("images/loading.gif")'/></span> </div></form>">
+		  Change password
+		</a>
+	      </td>
+	    </tr>
+	  </table>
+      </div>
+      
+      <div>
+    </div>
+	<div id="profile-edit-div">
+				<h4>Roles</h4>
+				<table class="">
+					@if(admin.roles!= null){
+							
+								@for((role,index)<-admin.roles.zipWithIndex){
+									<tr><td>@(index+1). @role.getName()</td></tr>
+								}
+							
+						}else{
+							<tr>    
+								<td text="text-danger">No roles found.</td>
+							</tr>
+						}
+				</table>
+			</div>
+	</div>
+    }else{
+      <strong>No Profile info found.</strong>
+    }
+    </div>
+}

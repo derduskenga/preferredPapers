@@ -1,0 +1,66 @@
+# ADMIN Routes
+# This file defines ADMIN application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET												/													controllers.admincontrollers.AdminActions.index()
+
+#Admin User Management Actions
+GET												/createadminuser						controllers.admincontrollers.AdminActions.createNewAdminUser()
+POST											/saveadminuser							controllers.admincontrollers.AdminActions.saveNewAdminUser()
+GET												/manageadminusers    				controllers.admincontrollers.AdminActions.manageAdminUsers()
+POST											/deactivateuser/:user_id   			controllers.admincontrollers.AdminActions.deactivateAdminUser(user_id:Long)
+GET												/editadminuser			    			controllers.admincontrollers.AdminActions.editAdminUser(user_id:Long)
+GET												/adminroles			    					controllers.admincontrollers.AdminActions.newAdminRole()
+POST											/adminroles			    					controllers.admincontrollers.AdminActions.saveNewAdminRole()
+
+#admin marketing email
+GET											/marketingemail					    					controllers.admincontrollers.AdminActions.marketingEmail()
+POST											/marketingemail/sendmail			    		controllers.admincontrollers.AdminActions.sendMarketingEmail()
+
+#admin profile actions
+GET												/myprofile			    					controllers.admincontrollers.AdminActions.myProfile()
+POST											/changepassword						controllers.admincontrollers.AdminActions.changePassword()
+
+#manage orders
+GET			/manageorders			   controllers.admincontrollers.ManageOrdersActions.manageOrders()
+GET				/manageorder/:order_code			    			controllers.admincontrollers.ManageOrdersActions.manageOrder(order_code: Long)
+POST			/manageorder/uploadfile/:order_code			controllers.admincontrollers.ManageOrdersActions.uploadProductFile(order_code: Long)
+
+#admin manage order messages
+GET				/manageorder/messages/:order_code				controllers.admincontrollers.ManageOrdersActions.orderMessages(order_code: Long)
+POST			/manageorder/messages/:order_code				controllers.admincontrollers.ManageOrdersActions.saveAdminMessage(order_code: Long)
+POST			/manageorder/messages/markread/:msg_id		controllers.admincontrollers.ManageOrdersActions.markMessageRead(msg_id: Long)
+
+
+
+#admin login logout actions
+GET												/login											controllers.admincontrollers.Application.login()
+POST											/login											controllers.admincontrollers.Application.authenticate()
+GET												/logout											controllers.admincontrollers.Application.logout()
+POST		/manageorder/askforextrapages/:pages/:order_code/:date  	controllers.admincontrollers.ManageOrdersActions.AskForExtraPages(pages:Int,order_code:Long,date:String)
+POST		/manageorder/askfordeadlineextensionadmin/:deadline/:date/:reason/:order_code		controllers.admincontrollers.ManageOrdersActions.AskForDeadlineExtension(deadline:String,date:String,reason:String,order_code:Long)
+GET		/manageorder/downloadproductfile/:file_id				controllers.admincontrollers.ManageOrdersActions.downloadProductFile(file_id:Long)
+GET		/manageorder/downloadOrderfile/:file_id			controllers.admincontrollers.ManageOrdersActions.adminDownloadOrderFile(file_id:Long)
+GET		/newadmincouponcodes					controllers.admincontrollers.AdminActions.newAdminCouponCode()
+POST		/submitadmincouponcodes					controllers.admincontrollers.AdminActions.generateAdminCouponCode()
+DELETE		/deleteadmincouponcode/:code				controllers.admincontrollers.AdminActions.deleteCouponCode(code:String)
+GET		/newwriter						controllers.admincontrollers.AdminActions.newWriter()
+POST		/submitwriter						controllers.admincontrollers.AdminActions.saveWriter()
+GET		/writer							controllers.admincontrollers.AdminActions.allWriters()
+GET		/writer/edit/:writer_id					controllers.admincontrollers.AdminActions.editWriter(writer_id:Long)
+POST		/manageorder/fetchwriter/				controllers.admincontrollers.ManageOrdersActions.fetchAllWriters()
+POST		/manageorder/assign/:date/:order_code/:writer_id	controllers.admincontrollers.ManageOrdersActions.assignOrderToWriter(date:String,order_code:Long,writer_id:Long)
+GET		/manageorder/order/revisioninstruction/:order_code		controllers.admincontrollers.ManageOrdersActions.getRevisionInstructions(order_code:Long)
+POST		/searchorder						controllers.admincontrollers.AdminActions.searchOrder()
+GET		/cancelorder/:order_code						controllers.admincontrollers.ManageOrdersActions.cancelOrder(order_code:Long)
+
+
+#robots.txt file
+GET  /robots.txt			controllers.admincontrollers.Application.robots()
+
+# Map static resources from the /public folder to the /assets URL path
+#GET     /assets/*file               controllers.admincontrollers.Assets.versioned(path="/public", file: Asset)
+
+
+->  / common.Routes

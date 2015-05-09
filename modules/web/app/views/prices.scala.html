@@ -1,0 +1,45 @@
+@import models.orders.OrderLevelOfWriting
+@(loginForm: Form[web.Application.Login])(deadline_list:List[models.orders.DeadlineDeadlineCategoryAssociation])
+@main("Timely Essay | For Quality Service")(loginForm){
+  <strong>Our Prices</strong>
+  
+  <div class="text-justify">
+    <p>Our pricing policy is quite friendly and practical , and there is always a chance for 
+
+    negotiations. So you do not have to shy away out of fear of the charges listed. Furthermore, 
+
+    we give offers to our loyal customers.</p>
+  </div>
+  
+  <div>
+      <table class="table table-bordered">
+	<thead>
+	  <tr>
+	    <th><p align="center">Deadline</p></th>
+	    <th><p align="center">Undergraduate/<br>College</p></th>
+	    <th> <p align="center">Master</p> </th>
+	    <th><p align="center"> Ph. D </p></th>
+	  </tr>
+	</thead>
+	<tbody>
+		@for(deadline<-deadline_list){
+		      <tr>
+				<td><p align="center">@deadline.orderDeadlines.deadline_value @deadline.orderDeadlines.deadline_unit</p></td>
+				
+				<td><p align="center">$@(deadline.additional_price + deadline.orderDeadlineCategory.OrderDocumentType.get(0).base_price + OrderLevelOfWriting.getLevelObject(1).additional_price)</p></td>
+				
+				<td><p align="center">$@(deadline.additional_price + deadline.orderDeadlineCategory.OrderDocumentType.get(0).base_price + OrderLevelOfWriting.getLevelObject(2).additional_price)</p></td>
+				
+				<td><p align="center">$@(deadline.additional_price + deadline.orderDeadlineCategory.OrderDocumentType.get(0).base_price + OrderLevelOfWriting.getLevelObject(3).additional_price)</p></td>
+		      </tr>
+		}
+	</tbody>
+      </table>
+  </div>
+  
+  <div>
+    <p align="center"><a href="@controllers.web.routes.Application.newOrder()" class="btn btn-warning">&nbsp;&nbsp;&nbsp;Good prices! Write My Essay Now&nbsp;&nbsp;&nbsp;</a></p>
+  </div>
+  
+  
+}

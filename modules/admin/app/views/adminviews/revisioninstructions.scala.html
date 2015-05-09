@@ -1,0 +1,32 @@
+@(orders: models.orders.Orders)
+@import controllers.admincontrollers.ManageOrdersActions
+
+@adminmain("Title"){
+	<div class="col-md-10" id="revision-body">
+		@if(orders.orderRevision.size()>0){
+				<table>
+					<thead>
+						<tr>
+							<th>
+								New Deadline
+							</th>
+							
+							<th>
+								Revision Instruction
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+			@for(revision<-orders.orderRevision){
+				<tr>
+					<td>@ManageOrdersActions.orderSupportLocalTime(orders.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm a")</td>
+					<td>@revision.revision_instruction</td>
+				</tr>
+					
+			}
+			
+					  </tbody>
+				</table>
+		}  
+	</div>
+}

@@ -1,0 +1,98 @@
+@import fieldtemplates._
+@import helper._
+@import models.orders._
+@import models.admin.adminutils._
+
+@(orders:models.orders.Orders)( newMessageForm: Form[models.orders.OrderMessages])(messageReceipients:Map[String,Boolean])(orderMessages: List[models.orders.OrderMessages])
+@adminmain("Timely Essay | Messages"){
+	 <div class="col-xs-10">
+		@if(orders == null){
+			<div id="" class="alert alert-danger" style="margin-top:20px">
+					<div class="no-order-messages">No order found.</div>
+			</div>
+		}else{
+			<a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(orders.order_code)">#@orders.order_code</a> Messages
+			<div id="order-messages" class="" style="margin-top:20px">
+				@if(orderMessages.isEmpty){
+					<div class="no-order-messages">No messages for this order.</div>
+				}else{
+					@for(message <- orderMessages){
+					@if(message.msg_from != models.orders.MessageParticipants.SUPPORT){
+							@if(message.msg_from == models.orders.MessageParticipants.CLIENT){
+								@if(message.msg_to == models.orders.MessageParticipants.WRITERS){
+								<div class="message-shared-class from-client-msg @if(message.status){read}else{unread}" id="to-message-@orders.order_code-@message.id-@if(message.status){read}else{unread}">
+									<div class="message-shared-class from-client-msg @if(message.msg_to==models.orders.MessageParticipants.WRITERS){msg-to-support} @if(message.status){read}else{unread} @if(message.status){read}else{unread}" id="@orders.order_code-@message.id">
+										<div class="to-client-msg-details">from @message.msg_from.toString().toLowerCase().capitalize  <small>to</small> @message.msg_to.toString().toLowerCase().capitalize <small> on </small>  @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("dd/MM/YYYY") <small>@@</small> @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("HH:mm a") </div>
+											<div class="bubble">
+											<pre>@Html(message.message)</pre>
+											
+											</div>     
+									  </div> 
+								</div>
+								}else{
+									<div class="message-shared-class from-client-msg @if(message.status){read}else{unread}" id="to-message-@orders.order_code-@message.id-@if(message.status){read}else{unread}">
+									<div class="message-shared-class from-client-msg @if(message.msg_to==models.orders.MessageParticipants.SUPPORT){msg-to-writers} @if(message.status){read}else{unread} @if(message.status){read}else{unread}" id="@orders.order_code-@message.id">
+										<div class="to-client-msg-details">from @message.msg_from.toString().toLowerCase().capitalize  <small>to</small> @message.msg_to.toString().toLowerCase().capitalize <small> on </small>  @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("dd/MM/YYYY") <small>@@</small> @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("HH:mm a") </div>
+											<div class="bubble">
+											<pre>@Html(message.message)</pre>
+											
+											</div>     
+									  </div> 
+								</div>
+								
+								
+								}
+							}else{
+								<div class="message-shared-class from-writer-msg @if(message.status){read}else{unread}" id="to-message-@orders.order_code-@message.id-@if(message.status){read}else{unread}">
+								<div class="message-shared-class from-writer-msg @if(message.msg_to==models.orders.MessageParticipants.SUPPORT){msg-to-support} @if(message.status){read}else{unread}" id="@orders.order_code-@message.id">
+									<div class="to-client-msg-details">from @message.msg_from.toString().toLowerCase().capitalize to @message.msg_to.toString().toLowerCase().capitalize<small> on </small>  @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("dd/MM/YYYY") <small>@@</small> @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("HH:mm a") </div>
+									<div class="bubble">
+									<pre>@Html(message.message)</pre>
+									</div>     
+								</div> 
+						 }	
+					}else{
+								<div class="message-shared-class from-client-msg" id="from-message-@orders.order_code-@message.id-@if(message.status){read}else{unread}">
+									<div class="from-client-msg-details">Support <small>to </small>@message.msg_to.toString().toLowerCase().capitalize<small> on </small> @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("dd/MM/YYYY") <small>@@</small> @AdminUtils.adminMessageLocalTime(message.sent_on,session.get("admin_email")).format("HH:mm a") </div>
+									<div class="bubble2"><pre>@Html(message.message)</pre></div>
+								</div>
+					}
+				}
+			}
+			</div>
+			
+			<div class="messages-action row"  @if(flash.containsKey("show_form")){style="display:none;"}>
+				<div>
+					<button class="btn new-msg-btn" onClick="alternateNewMessageView('msg-form')">New Message</button>
+				</div>
+			</div>
+			<div class="new-msg-div row" @if(!flash.containsKey("show_form")){style="display:none;"}>
+				@helper.form(action=controllers.admincontrollers.routes.ManageOrdersActions.saveAdminMessage(orders.order_code), 
+							'class->"form-horizontal", 'id-> "client-messages-form"){
+						@fieldtemplates.select1(newMessageForm("msg_to"),
+											label = "",
+											messageReceipients,
+											isMultiple = false,
+											help="",
+											default="Select Receipient")
+						Send/Reply as:&nbsp;&nbsp;
+						<input type="hidden" name="admin_message_upload_date" id="admin_message_upload_date" value="">
+						<input type="radio" name="sender" value="SUPPORT"> SUPPORT
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="sender" value="WRITER"> WRITER
+						<br>
+						<br>
+						@fieldtemplates.textarea1(newMessageForm("message"),
+											rows = "5",
+											label = "",
+											placeholder="Type Your Message Here")
+											
+						<div class="form-group" style="float:right">
+											<input type="submit" class="btn btn-primary" value="Send">
+											<input type="button" onClick="alternateNewMessageView('msg_action')" class="btn btn-default" value="Cancel">
+						</div>	
+				}	
+			</div>
+		}
+	</div>
+}

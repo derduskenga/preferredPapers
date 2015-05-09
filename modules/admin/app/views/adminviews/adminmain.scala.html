@@ -1,0 +1,110 @@
+@(title:String)(content:Html)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Timely Essay</title>
+	<!-- Works in Chrome, Safari, IE -->
+	
+	<link rel="shortcut icon" href="@routes.Assets.at("images/favicon_48.ico")">
+	<link rel="icon" href="@routes.Assets.at("images/favicon_48.ico")">
+	
+	<!-- custom css -->
+	<link href="@routes.Assets.at("bootstrap/css/bootstrap.min.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/mycss.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/admin.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/tablecloth.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/adminmessages.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/custombuttons.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("fontawesome/css/font-awesome.min.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("datetimepicker-master/jquery.datetimepicker.css")" rel="stylesheet" media="screen"> 
+	<link href="@routes.Assets.at("summernote/summernote.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("summernote/summernote-bs3.css")" rel="stylesheet" media="screen">
+	<link href="@routes.Assets.at("css/labelLike.css")" rel="stylesheet" media="screen">
+	<!-- fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+</head>
+<body>    
+	<div class="container"><!-- header container  -->
+		<div class="page-header"><!-- start of header -->  
+	</div><!-- end of header -->
+	<!-- Navigation -->
+	</div><!-- end of topnavigation container -->
+	<div class="container">
+	<div class="row"><!-- start of main body row -->
+		<div class="col-xs-2" ><!-- start of navigation column -->
+			<ul class="nav nav-pills nav-stacked" id="navigation">
+				<li><a href="@controllers.admincontrollers.routes.AdminActions.index()">Admin Dashboard</a></li>
+				<li><a href="@controllers.admincontrollers.routes.AdminActions.createNewAdminUser()">Add Users</a></li>
+				<li><a href="@controllers.admincontrollers.routes.AdminActions.manageAdminUsers()">Manage Users</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.newAdminRole()">Roles</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrders()">Manage Orders</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.myProfile()">My Profile</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.marketingEmail()">Marketing Email</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.newAdminCouponCode()">Marketing Program</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.newWriter()">Add Writer</a></li>
+				<li ><a href="@controllers.admincontrollers.routes.AdminActions.allWriters()">Manage Writers</a></li>
+			</ul>
+		</div><!-- end of navigation column  -->
+		<div class="container">
+			<div id="mainbody"><!-- start of main body -->
+				<div class="container" style="margin-left:3px;">
+					<div class="row admin-main-content">	
+								<div class="admin-logout">Hello, @session.get("f_name") @session.get("l_name"). <a href="@controllers.admincontrollers.routes.Application.logout()"><small>Logout</small></a></div>
+								@content
+					</div> <!-- /.row -->    
+				</div><!-- /.container -->
+			</div><!-- end of main body column -->
+		</div><!--end of container-->
+	</div><!-- end of main body row -->
+	</div>
+	<!---->
+	<div class="container">
+		<footer class="text-center">
+			<div class="footer-below">
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12">
+						<h3>Social media</h3>
+						<ul class="list-inline intro-social-buttons">
+							<li><a href="https://twitter.com" ><i class="fa fa-twitter fa-fw"></i> <span class="network-name"></span></a>	</li>
+							<li><a href="https://facebook.com"><i class="fa fa-facebook fa-fw"></i> <span class="network-name"></span></a>	</li>
+							<li><a href="https://facebook.com"><i class="fa  fa-google-plus fa-fw"></i> <span class="network-name"></span></a>	</li>
+							<li><a href="https://www.linkedin.com/"><i class="fa  fa-linkedin fa-fw"></i> <span class="network-name"></span></a>	</li>
+						</ul>   
+						Copyright &copy;Timely Essays 2014
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<div class="row">
+		</div>
+	</div> 
+	
+	<!--End Scripts -->
+	<script src="@routes.Assets.at("js/jquery/jquery.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrapvalidator/js/bootstrapValidator.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("summernote/summernote.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/bootbox/bootbox.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/admin.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/menu.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrap/js/bootstrap-hover-dropdown.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/manageorder.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("moment/moment.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("datetimepicker-master/jquery.datetimepicker.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/adminchangepassword.js")" type="text/javascript"></script> 
+	<script src="@routes.Assets.at("js/waypoint/lib/jquery.waypoints.min.js")" type="text/javascript"></script>	
+	<script src="@routes.Assets.at("js/adminmessages.js")" type="text/javascript"></script> 
+	<script src="@routes.Assets.at("js/customsummernote.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/deletecouponcode.js")" type="text/javascript"></script> 
+	<script src="@routes.Assets.at("js/assignordertowriter.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/datejs/date.js")" type="text/javascript"></script> 	
+	<script src="@routes.Assets.at("js/adminsearchorder.js")" type="text/javascript"></script>
+	<!--End Scripts -->
+	
+</body>
+</html>

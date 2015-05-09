@@ -1,0 +1,245 @@
+@(orderForm: Form[orders.Orders])(clientForm:Form[client.Client])(loginForm: Form[web.Application.Login])(countryMap:Map[Map[Long,String],Boolean])(documentMap:Map[Map[Long,String],Boolean])(documentDeadlines:Map[Map[Long,String],Boolean])(documentSubjects:Map[Map[Long,String],Boolean])(numberOfUnitsMap:Map[Map[Long,String],Boolean])(levelOfWriting:Map[Map[Long,String],Boolean])(currenceList:Map[orders.OrderCurrence,Boolean])(spacinList:Map[orders.Spacing,Boolean])(styleMap:Map[String,Boolean])(languageMap:Map[String,Boolean])(databaseMap:Map[String,Boolean])(refMap:Map[Integer,Boolean])(additionsList:Map[orders.Additions,Boolean])
+@import fieldtemplates._
+@import models.orders._
+@import models.client._
+@import helper._
+@import java.util._
+@import java.util.Map
+@import java.util.HashMap
+
+@main("Timely Essay | New Order")(loginForm){
+  @helper.form(action=controllers.web.routes.Application.saveClientOrder(),'class->"form-horizontal",'id->"clientorderform", 'name->"clientorderform"){
+    <fieldset>
+    
+      @priceLabel(orderForm)(currenceList)
+      
+      <input type="hidden"  value="@clientForm("id").valueOr("")" name="id"/>
+      <input type="hidden" id="client_time_zone_offset" value="@clientForm("client_time_zone_offset").valueOr("")" name="client_time_zone_offset"/>
+      
+      @if(flash.containsKey("clientorderformerros")){
+	    <div class="alert alert-danger">
+		    @flash.get("clientorderformerros")
+	    </div>
+	  }
+	  
+      <div id="client-personal-info" class="@if(clientForm("id").valueOr("") != "" || session.get("email") != null){hidden}">
+	  @if(flash.containsKey("emailinuse")){
+	    <div class="alert alert-danger">
+		    @flash.get("emailinuse")
+	    </div>
+	  }
+	
+	<legend>Personal details</legend>
+	@text(clientForm("f_name"),
+	  label = "First Name",
+	  placeholder = "First Name",
+	  divClass="col-sm-9")
+	
+	@text(clientForm("l_name"),
+	  label = "Last Name",
+	  placeholder = "Last Name",divClass="col-sm-9")
+	
+	@text(clientForm("email"),
+	  label = "Email",
+	  placeholder = "Email",divClass="col-sm-9")
+	
+	@text(clientForm("c_email"),
+	  label = "Confirm email",
+	  placeholder = "Re-enter your email",divClass="col-sm-9")
+	
+	@fieldtemplates.countryselect(clientForm("client_country"),
+	  label = "Select country",
+	  optionMap=countryMap,
+	  default="Select your country",divClass="col-sm-9"
+	)
+
+	<div class="row form-inline" id="client-mobile-phone">
+	  <label class="col-sm-3 control-label">Phone number</label><br>
+	  <div class="col-sm-9">	    
+	    @fieldtemplates.shortText(clientForm("country_code"),
+	      size="5",
+	      maxSize="6",
+	      activity="readonly")
+	    
+	    @fieldtemplates.shortText(clientForm("area_code"),
+	      label="-",
+	      size="8",
+	      maxSize="4",
+	      activity="",
+	      placeholder="area code")
+	    
+	    @fieldtemplates.shortText(clientForm("phone_number"),
+	      label="-",
+	      size="14",
+	      maxSize="8",
+	      activity="",
+	      placeholder="number")
+	  </div>
+	  
+	</div>
+	
+	<div class="form-group" id="">
+	  <label class="col-sm-3 control-label">&nbsp;</label><br>
+	  <div class="col-sm-9">	    
+	    <p class="phone-number"> 
+	      @if(flash.containsKey("phone_number")){
+		    @flash.get("phone_number")
+	      }
+	      @if(flash.containsKey("area_code")){
+		@flash.get("area_code")
+	      }
+	      @if(flash.containsKey("country_code")){
+		@flash.get("country_code")
+	      }
+	  </p>
+	  </div>
+	</div>
+	
+      </div>
+      
+      <input type="hidden"  value="@orderForm("order_id").valueOr("")" name="order_id"/>
+      
+      
+      <input type="hidden" id="deadline_category_tracker" name ="deadline_category_tracker" value="">
+      
+      <input type="hidden" value="" id="client_local_time" name="client_local_time"/>
+      
+      <div id="order-info">
+	<legend>Order details</legend>
+	@fieldtemplates.countryselect(orderForm("document_type"),
+	  label = "Document type",
+	  optionMap=documentMap,
+	  default="Select document type",
+	  includeStaticDefault=false,divClass="col-sm-9"
+	)
+	
+	@fieldtemplates.countryselect(orderForm("document_deadline"),
+	  label = "Order Urgency",
+	  optionMap=documentDeadlines,
+	  default="Urgency",
+	  includeStaticDefault=false,divClass="col-sm-9"
+	)
+	
+	<div id="order-subject-area">
+	  @fieldtemplates.countryselect(orderForm("document_subject"),
+	    label = "Order Subject",
+	    optionMap=documentSubjects,
+	    default="Select subject",
+	    includeStaticDefault=true,divClass="col-sm-9"
+	  )
+	</div>
+	
+	@text(orderForm("topic"),
+	  label = "You Topic",
+	  placeholder = "Topic",divClass="col-sm-9")
+	  
+	@fieldtemplates.textarea(orderForm("order_instruction"),
+	  label="Your instructions",
+	  placeholder = "Type the instructions you would like to be followed by our writer to complete your work",
+	  rows="4",
+	  help="(You will be able to upload any additional files to your order once your account is created)",
+	  divClass="col-sm-9")
+	  
+	@fieldtemplates.unitsSelect(orderForm("number_of_units"),
+	  label = "Select number of pages/assignments/questions",
+	  optionMap=numberOfUnitsMap,
+	  default="--select--",
+	  includeStaticDefault=true,divClass="col-sm-9"
+	)	
+		
+	<div id="spacing-area">
+	  @spacingradiobutton(orderForm("page_spacing"),
+	    label="Line spacing", 
+	    buttonNameList=spacinList,divClass="col-sm-9"
+	  )
+	</div>
+	
+	@fieldtemplates.countryselect(orderForm("level_of_writing"),
+	  label = "Level",
+	  optionMap=levelOfWriting,
+	  default="Select document type",
+	  includeStaticDefault=false,divClass="col-sm-9"
+	)
+	
+	@currencyradiobuttons(orderForm("order_currency"),
+	  label="Currency",
+	  buttonNameList=currenceList,divClass="col-sm-9"
+	)
+	
+	@fieldtemplates.select(orderForm("writing_style"),
+	 label="Reference Style",
+	 optionMap=styleMap,divClass="col-sm-9"
+	)  
+	  
+	@fieldtemplates.referencecountselect(orderForm("no_of_references"),
+	  label="No. of References",
+	  optionMap=refMap,
+	  isDefaultSelect=false,
+	  divClass="col-sm-9",
+	  default="--select--"
+	)
+
+	<div id="os-language-database" class="hidden">
+	  @fieldtemplates.osmultiselect(orderForm("operating_system"),
+	    label="Operating system",
+	    optionMap=styleMap,divClass="col-sm-9"
+	  )
+	  
+	  @fieldtemplates.select(orderForm("prog_language"),
+	    label="Programing language",
+	    optionMap=languageMap,
+	    isDefaultSelect=true,
+	    divClass="col-sm-9",
+	    default="--select language--"
+	  )
+	  
+	   @fieldtemplates.select(orderForm("database"),
+	    label="Database",
+	    optionMap=databaseMap,
+	    isDefaultSelect=true,
+	    divClass="col-sm-9",
+	    default="--select database--"
+	  )  
+	</div><!--End of os-language-database-->
+      </div> <!--end of order-details -->
+      
+      <div id="order-additions">
+	<legend>Additions (You may need this)</legend>	  
+	  @for((additions,checked_)<-additionsList){
+	    @additionscheckboxes(orderForm("orders_additions"),
+	      checkboxList=additions.id,
+	      label=additions.ui_label,
+	      isChecked=checked_,
+	      price=additions.additional_price,divClass="col-sm-7"
+	    )
+	  }
+	  <hr>
+	  
+	  <div id="coupon-code-message" style="padding-left:12em;padding-bottom:5px;" >
+
+	  </div>
+	  <div class="@if(session.get("email")!=null && Client.getClient(session.get("email")).orders.size()>0){hidden}"> 
+	      @fieldtemplates.text(orderForm("coupon_code"),
+		label = "Coupon code",
+		placeholder="Type or paste your coupon code here",
+		divClass="col-sm-9",
+		help="(If you have a coupon code, enter it here and you will get a 16% discount when you pay for your first order)")
+	  </div>
+
+	  
+	  @fieldtemplates.text(orderForm("prefered_writer"),
+	    label = "Prefered writer ID",
+	    placeholder="Leave blank if you do not have prefered writer",
+	    divClass="col-sm-9",
+	    help="(If you have already used this writing service, enter the Id of the writer you would love to complete your work. If your prefered writer acceptes this order, you will pay 10% more, which will go directly to the writer)")
+	    
+	    
+	  
+      </div>
+      <hr>
+      <div class="form-group" align="center">
+	<input type="submit" class="btn btn-primary col-lg-12" value="View Order Summary >>>" id = "client-order-form-submit">
+      </div>
+    </fieldset>
+  }
+}

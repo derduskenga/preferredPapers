@@ -1,0 +1,48 @@
+@import fieldtemplates._
+@import helper._
+@(newAdminUserForm: Form[models.admin.adminmodels.AdminUser])(adminLevels:Map[String,Boolean])
+@adminmain("Timely Essay | For Quality Service"){	
+			<div class="col-sm-4  col-md-offset-2"  id="intro-userform">
+				<div ><!-- employee form -->                   
+				@if(flash.containsKey("success")){
+					<div class="alert alert-success">
+						@flash.get("success")
+					</div>
+				}
+				
+				@if(flash.containsKey("error")){
+					<div class="alert alert-danger">
+						@flash.get("error")
+					</div>
+				}
+				
+				@helper.form(action=controllers.admincontrollers.routes.AdminActions.saveNewAdminUser(), 
+																	'class->"form-vertical", 'id-> "client-messages-form",'name->"landreg"){
+				<input type="hidden"  value="@newAdminUserForm("admin_user_id").valueOr("")" name="admin_user_id"/>
+				@text2(newAdminUserForm("first_name"),
+								label = "First Name",
+								placeholder="First Name"
+							 )
+								
+				@text2(newAdminUserForm("last_name"),
+								label = "Last Name",
+								placeholder="Last Name"
+								)
+								
+				@text2(newAdminUserForm("email"),
+								label = "Email",
+								placeholder="your@email.com"
+								)
+								
+				@userpermissionscheckboxes(newAdminUserForm("admin_priviledges"),
+								label = "User Priviledges",
+								adminLevels,
+								help="")
+								
+				<div class="form-group" style="float:right">
+									<input type="submit" class="btn btn-primary" value="Register">
+				</div>		
+			}
+			</div><!--end employee form -->
+		</div><!--end col-lg-6 -->
+} 

@@ -1,0 +1,155 @@
+@(clientOrders: models.orders.Orders)
+@import fieldtemplates._
+@import models.orders._
+@import models.utility._
+@import helper._
+
+@clientmain("Timely Essay | Pay for Order"){
+  @if(clientOrders.order_id!=null){
+	  
+	  <br>
+	  
+    @if(flash.containsKey("emailsenttonewuser")){
+      <div class="alert alert-success">
+	      @flash.get("emailsenttonewuser")
+      </div>
+    }
+	  
+    <h5>Pay for Order <a href="@controllers.web.client.routes.ClientActions.clientViewOrder(clientOrders.order_code)">#@clientOrders.order_code</a></h5>
+    <div id="order-summary">
+      <table>
+	<tr>
+	  <td><p align="center">@clientOrders.orderDocumentType.document_type_name</p></td>
+	</tr>      
+	<tr>
+	  <td><p align="center">Topic: @clientOrders.topic</p></td>
+	</tr>      
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perassignment.toString()){	     
+	  <tr>
+	    <td><p align="center">@clientOrders.number_of_units assignment(s)</p></td>
+	  </tr>      
+	}      
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perpage.toString()){
+	  <tr>
+	    <td><p align="center">@clientOrders.number_of_units page(s) @clientOrders.spacing.spacing @if(clientOrders.additional_pages>0){(@clientOrders.additional_pages Additional pages)}</p></td>
+	  </tr>
+	}      
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perquestion.toString()){
+	  <tr>
+	    <td><p align="center">@clientOrders.number_of_units questions</p></td>
+	  </tr>
+	}      
+	<tr>
+	  <td colspan="2"><h3 align="center">
+		
+			@if(clientOrders.checkIfOrderIsFullyPaid(clientOrders)){
+				<p class="text-success" align="center">Order fully paid</p>
+			}else{
+			      <!--normal payment: order total-->
+			      @if(!clientOrders.is_paid){
+				      Order Total: @clientOrders.orderCurrence.currency_symbol_2 @(Math.round(clientOrders.order_total*clientOrders.orderCurrence.convertion_rate*100)/100.00)
+				      
+				      @if(clientOrders.qualifiesForDiscount(clientOrders)){(Your discount: @clientOrders.orderCurrence.currency_symbol_2 @(Math.round(clientOrders.computeOrderDiscount(clientOrders)*clientOrders.orderCurrence.convertion_rate*100)/100.00))}</h3>
+			      }
+			      <!--payment for prefered writer-->
+			      @if(clientOrders.is_paid && clientOrders.is_writer_assigned && clientOrders.prefered_writer != "" && !clientOrders.prefered_writer_value_paid){
+				    Prefered Writer Pay:@clientOrders.orderCurrence.currency_symbol_2 @(Math.round(clientOrders.prefered_writer_value*clientOrders.orderCurrence.convertion_rate*100)/100.00)
+			      }
+			      <!--payment for additional pages -->
+			      @if(clientOrders.is_paid && clientOrders.additional_pages>0 && !clientOrders.is_additional_pages_paid){
+				    Additinal Pages Pay:@clientOrders.orderCurrence.currency_symbol_2 @(Math.round(clientOrders.additional_pages_value*clientOrders.orderCurrence.convertion_rate*100)/100.00)
+			      }
+			}
+		
+	  </td>
+	</tr>      
+      </table>     
+      <table>
+	@if(!clientOrders.checkIfOrderIsFullyPaid(clientOrders)){
+		  <tr>
+		    
+			@if(!clientOrders.is_paid){
+			      <td>
+				    <span class="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="@controllers.web.routes.Application.editOrder(clientOrders.order_code)" class="btn btn-primary">&lt;&lt;Edit Order</a></span>
+			      </td>
+			}
+		     <!--pay form for order total payment-->
+		    @if(!clientOrders.is_paid){
+			<td>
+			    <form action='@Utilities.CHECKOUT_URL' method='post'>
+				      <input type='hidden' name='sid' value='@Utilities.OUR_MERCHANT_ACCOUNT_NO'/>
+				      <input type='hidden' name='mode' value='2CO'/>
+				      <input type='hidden' name='li_0_type' value='product'/>
+				      @if(clientOrders.qualifiesForDiscount(clientOrders)){
+					    <input type='hidden' name='li_0_startup_fee' value='-@(Math.round(clientOrders.computeOrderDiscount(clientOrders)*clientOrders.orderCurrence.convertion_rate*100)/100.00)'/>
+				      }
+				      <input type='hidden' name='li_0_name' value='Order No. #@clientOrders.order_code'/>
+				      <input type='hidden' name='li_0_price' value='@(Math.round(clientOrders.order_total*clientOrders.orderCurrence.convertion_rate*100)/100.00)'/>
+				      <input type='hidden' name='card_holder_name' value='@clientOrders.client.f_name @clientOrders.client.l_name'/>		    
+				      <input type='hidden' name='country' value='@clientOrders.client.country.iso3'/>
+				      <input type='hidden' name='currency_code' value='@clientOrders.orderCurrence.currency_symbol'/>
+				      <input type='hidden' name='li_0_product_id' value="@clientOrders.order_code"/>
+				      <input type='hidden' name='email' value="@clientOrders.client.email"/>
+				      <input type='hidden' name='li_0_description' value="Payment for order #@clientOrders.order_code: @clientOrders.topic"/>
+				      <input type='hidden' name='phone' value='@clientOrders.client.country_code-@clientOrders.client.area_code-@clientOrders.client.phone_number'/> 
+				      <!-- my custom parameter-->
+				      <input type='hidden' name='payment_type' value='@Utilities.PAY_ORDER'/>
+				      <input class="btn btn-primary" name='submit' type='submit' value='Pay for Order &gt;&gt;'/> 
+			    </form>
+			</td>
+		    }
+		    <!-- form for prefered writer payment-->
+		    @if(clientOrders.is_paid && clientOrders.is_writer_assigned && clientOrders.prefered_writer != "" && !clientOrders.prefered_writer_value_paid){
+			  <td>
+				<form action='@Utilities.CHECKOUT_URL' method='post'>
+					<input type='hidden' name='sid' value='@Utilities.OUR_MERCHANT_ACCOUNT_NO'/>
+					<input type='hidden' name='mode' value='2CO'/>
+					<input type='hidden' name='li_0_type' value='product'/>
+					<input type='hidden' name='li_0_name' value='Order No. #@clientOrders.order_code'/>
+					<input type='hidden' name='li_0_price' value='@(Math.round(clientOrders.prefered_writer_value*clientOrders.orderCurrence.convertion_rate*100)/100.00)'/>
+					<input type='hidden' name='card_holder_name' value='@clientOrders.client.f_name @clientOrders.client.l_name'/>		    
+					<input type='hidden' name='country' value='@clientOrders.client.country.iso3'/>
+					<input type='hidden' name='currency_code' value='@clientOrders.orderCurrence.currency_symbol'/>
+					<input type='hidden' name='li_0_product_id' value="@clientOrders.order_code"/>
+					<input type='hidden' name='email' value="@clientOrders.client.email"/>
+					<input type='hidden' name='li_0_description' value="Payment for order #@clientOrders.order_code: @clientOrders.topic for prefered writer"/>
+					<input type='hidden' name='phone' value='@clientOrders.client.country_code-@clientOrders.client.area_code-@clientOrders.client.phone_number'/>
+					<!-- my custom parameter-->
+					<input type='hidden' name='payment_type' value='@Utilities.PREFERED_WRITER_PAYMENT'/>
+					<p @if(clientOrders.is_paid){align="center"}><input class="btn btn-primary" name='submit' type='submit' value='Pay for Order &gt;&gt;'/> </p>
+				</form>
+			</td>
+		    
+		    }
+		    
+		    <!--form for additional pages payment-->
+		    @if(clientOrders.is_paid && clientOrders.additional_pages>0 && !clientOrders.is_additional_pages_paid){
+			  <td>
+				    <form action='@Utilities.CHECKOUT_URL' method='post'>
+					    <input type='hidden' name='sid' value='@Utilities.OUR_MERCHANT_ACCOUNT_NO'/>
+					    <input type='hidden' name='mode' value='2CO'/>
+					    <input type='hidden' name='li_0_type' value='product'/>
+					    <input type='hidden' name='li_0_name' value='Order No. #@clientOrders.order_code'/>
+					    <input type='hidden' name='li_0_price' value='@(Math.round(clientOrders.additional_pages_value*clientOrders.orderCurrence.convertion_rate*100)/100.00)'/>
+					    <input type='hidden' name='card_holder_name' value='@clientOrders.client.f_name @clientOrders.client.l_name'/>		    
+					    <input type='hidden' name='country' value='@clientOrders.client.country.iso3'/>
+					    <input type='hidden' name='currency_code' value='@clientOrders.orderCurrence.currency_symbol'/>
+					    <input type='hidden' name='li_0_product_id' value="@clientOrders.order_code"/>
+					    <input type='hidden' name='email' value="@clientOrders.client.email"/>
+					    <input type='hidden' name='li_0_description' value="Payment for order #@clientOrders.order_code: @clientOrders.topic for additional pages"/>
+					    <input type='hidden' name='phone' value='@clientOrders.client.country_code-@clientOrders.client.area_code-@clientOrders.client.phone_number'/>
+					    <!-- my custom parameter-->
+					    <input type='hidden' name='payment_type' value='@Utilities.ADDITIONAL_PAGES_PAYMENT'/>
+					    <p @if(clientOrders.is_paid){align="center"}><input class="btn btn-primary" name='submit' type='submit' value='Pay for Order &gt;&gt;'/> </p> 
+				    </form>
+			  </td>
+		    }
+		    </td>	  
+		  </tr>   
+	}
+      </table>      
+    </div>
+  }else{
+    <strong>No order found </strong>
+  }
+}

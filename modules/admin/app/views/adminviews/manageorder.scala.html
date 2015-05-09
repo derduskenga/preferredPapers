@@ -1,0 +1,403 @@
+@(clientOrders: models.orders.Orders)(orderFilesForm:Form[models.orders.OrderProductFiles])(unread_messages:Int)
+@import models.orders._
+@import controllers.admincontrollers.ManageOrdersActions
+@import fieldtemplates._
+@adminmain("Title"){
+<div class="col-md-10" id="mainbody">
+ <a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrders()">&lt;&lt;Back to all orders</a>
+ @if(clientOrders!=null){
+ @if(clientOrders.order_id!=null){
+	 <h3>Client details</h3>
+	 <input type="hidden" name="admin_local_time_for_order_management" id="admin_local_time_for_order_management" value="">
+     <div>
+      <table>
+		<tr>
+			<td>Name</td>
+			<td>@clientOrders.client.f_name  @clientOrders.client.l_name</td>
+		</tr>
+		<tr>
+			<td>Phone Number</td>
+			<td>@clientOrders.client.country_code-@clientOrders.client.area_code-@clientOrders.client.phone_number</td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td>@clientOrders.client.email</td>
+		</tr>
+		<tr>
+			<td>Time Zone</td>
+			<td>@clientOrders.client.client_time_zone_real.getDisplayName().toString()</td>
+		</tr>
+		<tr>
+			<td>Current Time</td>
+			<td>@(models.admin.adminutils.AdminUtils.getCurrentClientTime(clientOrders.client.client_time_zone_real))</td>
+		</tr>
+		<tr>
+			<td>Country</td>
+			<td>@clientOrders.client.country.nicename</td>
+		</tr>
+		@if(clientOrders.client.orders.size()>1){
+			<tr>
+				<td>Other orders for this client</td>
+				<td>@for(order<-clientOrders.client.orders){@if(order.order_code != clientOrders.order_code){ <a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">@order.order_code</a> }}</td>
+			</tr>
+		}
+	  </table>
+	 </div>
+    <h3>Order details</h3>
+    <div>
+      <table>
+		<tr>
+			<td><p class="phone-number">Payment Status</p></td>
+			<td><p>@if(!(clientOrders.is_writer_assigned && clientOrders.is_closed)){
+			     <input type="hidden" value="" name="assign_order_local_time" id="assign_order_local_time">
+			    
+
+			    @if(!clientOrders.is_paid){<p class="phone-number">Not paid <a href="@controllers.admincontrollers.routes.ManageOrdersActions.cancelOrder(clientOrders.order_code)" class="btn btn-danger">Cancel Order </a>}else{ @if(clientOrders.checkIfOrderIsFullyPaid(clientOrders)){Order fully paid}else{<p class="phone-number">Order Partially paid</p>}			    
+			    @if(clientOrders.prefered_writer.equals("")){<a class="btn btn-warning" id="no-prefered-writer-assign-btn" title="Assign this order to writer" href="#">Assign to Writer <i class="fa fa-user-md fa-lg"></i></a>
+			      <span id="loading-gif-for-non-prefered-writer-assign" class="hidden">
+				<img src="@routes.Assets.at("images/loading.gif")"/>Assigning...
+			      </span>
+			       <span id="assign-writer-response-message"></span> 
+
+			      <div id="assign-order-form" class="hidden">
+				   <form id="assign_order_form" name="assign_order_form" class="form-horizontal">
+				   <input id="assigned-order-code" type="hidden" value="@clientOrders.order_code">
+				    Writer ID: <input type="text" name="assigning_writer_id" id="assigning-writer-id" placeholder="Writer ID" size="7">
+				    <input id="order-assign-btn" type="submit" value="Assign">
+				    </form>
+			      </div>
+
+			      }else{<a href="#" id="btn-assign-for-prefered-writer" title="Assign this order to writer @clientOrders.prefered_writer" class="btn btn-warning">Writer @clientOrders.prefered_writer is prefered. Assign <i class="fa fa-user-md fa-lg"></i></a> 
+			      <span id="loading-gif-for-prefered-writer-assign" class="hidden">
+				<img src="@routes.Assets.at("images/loading.gif")"/>Assigning...
+			      </span>
+			      <input id="assigned-order-code-for-prefered" type="hidden" value="@clientOrders.order_code"> <input id="prefered-writer-id" type="hidden" value="@clientOrders.prefered_writer"> <span id="assign-writer-response-message-for-prefered-writer"></span>}}}else{
+				   @if(!clientOrders.is_paid){<p class="phone-number">Not paid}else{@if(clientOrders.checkIfOrderIsFullyPaid(clientOrders)){<span class="text-success">Order fully paid</p>}else{<p class="phone-number">Order Partially paid</p>}}<span class="text-success">Order has been assigned to @clientOrders.freelanceWriter.writer_id</span>
+			      }
+			      <br>
+			      @if(clientOrders.additional_pages>0 && !clientOrders.is_additional_pages_paid){
+				    <p class="phone-number">Additional pages for order has not been paid for!</p>
+			      }
+			      
+			      @if(clientOrders.prefered_writer !="" && !clientOrders.prefered_writer_value_paid && clientOrders.is_writer_assigned){
+				    <p class="phone-number">Additional pay for prefered writer has not been made!</p>
+			      }
+			      
+		      </p></td>
+		</tr>
+		<tr>
+			<td>Order code</td>
+			<td>#@clientOrders.order_code</td>
+		</tr>
+		
+		<tr>
+		  <td>Order Total</td>	  <td><strong>@clientOrders.orderCurrence.currency_symbol_2@(Math.round(clientOrders.order_total*clientOrders.orderCurrence.convertion_rate*100)/100.00)</strong></td>
+		</tr>
+
+		
+		<tr>
+		  <td>Amount paid</td>  <td><strong>@clientOrders.orderCurrence.currency_symbol_2@(Math.round(clientOrders.amount_paid*clientOrders.orderCurrence.convertion_rate*100)/100.00)</strong></td>
+		</tr>
+		
+				
+		@if(clientOrders.orderRevision.size()>0){
+			<tr>
+				<td>Revision Instructions</td>
+				<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.getRevisionInstructions(clientOrders.order_code)">View Revision Instructions</a></td>
+			</tr>
+		}
+		
+		<tr>
+			<td>Order status</td>
+			<td>@if(clientOrders.is_writer_assigned == false){Awaiting writer}else{Worked on}</td>
+		</tr> 
+		<tr>
+			<td>Document type</td>
+			<td>@clientOrders.orderDocumentType.document_type_name</td>
+		</tr>      
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() != OrderCppMode.CppModes.perassignment.toString()){
+		<tr>      
+			<td>Subject area</td>
+			<td>@clientOrders.orderSubject.subject_name</td>
+		</tr>
+	}
+		<tr>
+			<td>Topic</td>
+			<td>@clientOrders.topic</td>
+		</tr>
+	
+		<tr>
+			<td>Style</td>
+			<td>@clientOrders.writing_style</td>
+		</tr>
+	
+		<tr>
+			<td>No. of sources/references</td>
+			<td>@clientOrders.no_of_references</td>
+		</tr>
+	    
+		<tr>
+			<td>Order Deadline</td>
+			<td> <span>@ManageOrdersActions.orderSupportLocalTime(clientOrders.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm a")</span> </td>
+		</tr>
+		<tr>
+			<td>Time remaining</td>
+			<td>@models.admin.adminutils.AdminUtils.getTimeRemaining(clientOrders.order_deadline)</td>
+		</tr>
+	
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perassignment.toString()){
+		<tr>
+			<td>Operating system</td>
+			<td>@clientOrders.operating_system</td>
+		</tr>
+		
+		<tr>
+			<td>Programming language</td>
+			<td>@clientOrders.prog_language</td>
+		</tr>
+		
+		<tr>
+			<td>Database</td>
+			<td>@clientOrders.database</td>
+		</tr>
+			
+		<tr>
+			<td>Number of assignments</td>
+			<td>@clientOrders.number_of_units</td>
+		</tr>      
+		}
+		@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perpage.toString()){
+		<tr>
+			<td>Number of pages</td>
+			<td>@(clientOrders.number_of_units+clientOrders.additional_pages)</td>
+		</tr>
+		
+		<tr>
+			<td>Spacing</td>
+			<td>@clientOrders.spacing.spacing</td>
+		</tr>
+	}
+	
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perquestion.toString()){
+	  <td>Number of questions</td>
+	    <td>@clientOrders.number_of_units</td>
+	  </tr>
+	  <tr>
+	    <td>Spacing</td>
+	    <td>@clientOrders.spacing.spacing</td>
+	  </tr>
+	}
+	
+	@if(clientOrders.additions.size()>0){
+	  <tr>
+	    <td>Additions</td>
+	    <td>
+	      @for(aList<-clientOrders.additions){
+		@aList.ui_label
+		(+ @clientOrders.orderCurrence.currency_symbol_2 @( Math.round(aList.additional_price*clientOrders.number_of_units*clientOrders.orderDocumentType.additions_factor*100)/100.00))
+		<!--<br><br> -->
+	      }
+	    </td>
+	  </tr> 	
+	}      
+
+	  <tr>
+	    <td>Messages</td> 
+	    <td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(clientOrders.order_code)">@OrderMessages.getAdminOrderMessages(clientOrders.order_code).size() (<span class="phone-number">@unread_messages Unread</span>)</a> <a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(clientOrders.order_code)" class="btn btn-primary btn-sm"> Send message for this order </a></td>
+	  </tr>
+      </table>
+    </div>
+      <!--..........................................................................................................-->
+	@if(!clientOrders.is_complete){
+	   <div id="deadline-form-admin"> 
+	      <form id="extend_deadline_form_admin" name="extend_deadline_form_admin">		
+		<div id="order-code-admin" class="hidden">@clientOrders.order_code</div>
+		<div class="">							
+		    <legend>Ask for deadline extension</legend> <br>	
+		    <div class="row">							
+			<div id="deadline-extension-request-response"></div>							    
+			<div class='col-sm-4'>
+			    <div class="form-group">					
+				<div class='input-group date' id=''>
+				    <span class="input-group-addon" id="sizing-addon1">Date/Time</span>
+				    <input type="text" value="@ManageOrdersActions.orderSupportLocalTime(clientOrders.order_deadline,session.get("admin_email")).format("YYYY-MM-dd HH:mm")" class="form-control input-sm" name="order_deadline_admin" id="order_deadline_admin"/> 
+				</div>								
+			    </div>								
+			</div>									
+				    
+			<div class="col-sm-4">
+			  <div class="form-group">
+			    <div class='input-group date' id=''>
+			      <span class="input-group-addon" id="sizing-addon1">Reason</span>
+				<select class="form-control input-sm" id="deadline_extension_reason" name="deadline_extension_reason">
+					<option value="">--Select Reason--</option>
+					<option value="USING_SOFTWARE"> Using some software </option>
+					<option value="EXTENSIVE_RESEARCH"> Extensive research </option>
+					<option value="CLOSE_TO_DEADLINE"> Close to deadline </option>
+					<option value="LIMITED_MATERIAL"> Limited reference material </option>
+				</select>
+			    </div>
+			  </div>
+			</div>
+				    
+			<div class='col-sm-3'>						
+			    <div class="form-group">						
+				<div id='extend-to-date-admin-btn'>				
+				    <button type="submit" id="btn-deadline-extension-admin" class="btn btn-primary btn-sm">
+				      &nbsp;&nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp;&nbsp;					
+				    </button>	
+				    <span id="loading-gif-extend-admin" class="hidden">
+				      <img src="@routes.Assets.at("images/loading.gif")"/>Submiting...
+				    </span>
+				</div>						
+			    </div>							
+			</div>							
+										    
+		    </div>							
+		</div>									
+	      </form>
+	    </div>
+	}
+	  @if(!clientOrders.is_complete && clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){
+	    <hr> <!--.........................................................................--> 
+	    <div id="deadline-form-admin"> 
+	      <form id="extra_pages_form" name="extra_pages_form" method="post" action="" enctype="multipart/form-data">		
+		<div class="">							
+		    <legend>Request for additional pages</legend> <br>	
+		    <div class="row">							
+			<div id="additional-pages-request-response"></div>						    
+			<div class='col-sm-3'>
+			    <div class="form-group">					
+				<div class='input-group' id=''>
+				    <span class="input-group-addon" id="sizing-addon1">Extra pages</span>
+				    <input type="number" value="" min="1" max="@Math.round((clientOrders.number_of_units/2))" data-fv-integer-message="The value is not an integer" class="form-control input-sm" name="extra_pages" id="extra_pages"/>
+				</div>								
+			    </div>								
+			</div>
+				    
+			<div class="col-sm-3">						
+			    <div class="form-group">						
+				<div id="">				
+				    <button type="submit" id="extra-pages-btn" class="btn btn-primary btn-sm">
+				      &nbsp;&nbsp;&nbsp;&nbsp; Submit &nbsp;&nbsp;&nbsp;&nbsp;					
+				    </button>	
+				    <span id="loading-gif-extra-pages" class="hidden">
+				      <img src="@routes.Assets.at("images/loading.gif")"/>Submiting...
+				    </span>
+				</div>						
+			    </div>							
+			</div>							
+									    
+		    </div>
+		    Note that asking additional pages from the client does not change the client's instructions 
+		</div>									
+	      </form>
+	    </div>
+	    <hr><!--.........................................................................--> 
+	  }
+    
+    <h3><legend>Order instructions and files</legend></h3>
+    <div id="order-description-files" class="order-files-bg">
+      <div>
+	<div class="fix-order-instruction-height">
+	  <p><pre>@clientOrders.order_instruction</pre></p>
+	</div>
+    </div>
+      
+    @if(clientOrders.orderFiles.size()>0){
+	<div>
+	  <legend>Order additional files</legend>
+	  <!--files will go here -->
+	  @if(flash.containsKey("orderfiledownloaderror")){
+	    <div class="alert alert-danger">
+		    @flash.get("orderfiledownloaderror")
+	    </div>
+	  }
+	  @for(orderList <- clientOrders.orderFiles){
+	    @orderList.file_name <a href="#" class="order-file-shared-class" id="order-file-@orderList.id" title="download @orderList.file_name file"> <span class="fa fa-download file-download-icon"> </span></a><br>
+	  }
+	</div>
+      }
+      
+      <div>
+	@helper.form(action=controllers.admincontrollers.routes.ManageOrdersActions.uploadProductFile(clientOrders.order_code),'class->"form-horizontal",'id->"orderFileForm", 'name->"orderFileForm",'enctype -> "multipart/form-data"){
+	  <fieldset>
+	    @if(flash.containsKey("fileuploadresponseerror")){
+	      <div class="alert alert-danger">
+		      @flash.get("fileuploadresponseerror")
+	      </div>
+	    }	   
+	    @if(flash.containsKey("fileuploadresponsesuccess")){
+	      <div class="alert alert-success">
+		      @flash.get("fileuploadresponsesuccess")
+	      </div>
+	    }
+	    <legend>Upload Order Product Files</legend>
+	 <div>
+		@adminorderfileupload(orderFilesForm("file_name"),
+		  label = "Upload order File",
+		  divClass="col-sm-3")
+		  <div class="col-sm-3">
+				<select class="form-control input-sm" name="product_file_type">
+					<option value="">--Select Type--</option>
+					@if(!clientOrders.on_revision){
+						<option value="PRODUCT">Product</option>
+					}else{
+						<option value="REVISION">Revision</option>
+					}
+					<option value="DRAFT">Draft</option>
+					<option value="REFERENCE_MATERIAL">Reference Material</option>
+					<option value="ADDITIONAL_FILE">Additional File</option>
+					<option value="OTHER">Other</option>
+				</select>
+		  </div>
+		<input type="hidden" id="file_local_date" name="file_local_date">
+		<div class="col-sm-2 form-group">
+		  <input type="submit" class="btn btn-primary btn-sm" value="Upload file" id = "order-file-form-submit">
+		</div>
+	 </div>
+	      
+	  </fieldset>
+	}
+      </div>
+    </div> 
+    
+    <hr>   
+    @if(clientOrders.orderProductFiles.size()>0){
+      <h4>Order product uploads</h4> 
+	@if(flash.containsKey("orderproductfiledownloaderror")){
+	  <div class="alert alert-success">
+		  @flash.get("orderproductfiledownloaderror")
+	  </div>
+	}
+	<table>
+	  <tr>
+	    <td><strong> Type </strong></td>
+	    <td><strong> From </strong></td>
+	    <td><strong> Name </strong></td>
+	    <td><strong> Size </strong></td>
+	    <td><strong> Upload date </strong></td>
+	    <td><strong> Download time </strong></td>
+	  </tr>
+	  @for(productFiles <- clientOrders.orderProductFiles){
+	  <tr>
+	  <!--width="28" height="22"  -->
+	    <td> @productFiles.product_file_type.name() </td>
+	    <td> @productFiles.owner.name()</td>
+	    <td> @productFiles.file_name  <a href="#" title="download" class="admin-product-file-shared-class" id="product-file-@productFiles.id"><span class="fa fa-download file-download-icon"> </span></a></td>
+	    <td> @(Math.round((productFiles.file_size).doubleValue()/(1024*1024)*1000)/1000.000) MB</td>
+	    <td>@ManageOrdersActions.orderSupportLocalTime(productFiles.upload_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm a")</td>
+	    <td>@if(productFiles.has_been_downloaded){Downloaded <small>@@</small> @ManageOrdersActions.orderSupportLocalTime(productFiles.download_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm a")}else{Not Downloaded}</td>
+	  </tr>
+	  }	  
+	 </table>
+	}
+	}else{
+		<div class="alert alert-danger">Order not found.</div>
+	}
+
+}else{
+		<div class="alert alert-danger">Order not found.</div>
+}	
+</div>
+}

@@ -1,0 +1,91 @@
+.asd {
+    background:rgba(0,0,0,0);
+    border:none;
+}
+
+.phone-number{
+  color:red;
+}
+
+.order-files-bg{
+  background-color:#FAFAFA;
+}
+
+
+.textareadiv{
+     width: 100%;
+     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+     box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+
+#sticky {
+    padding: 0.009ex;
+    width: 652px;
+    font-size: 2em;
+    border-radius: 0.5ex;
+    background-color: #D6D6FF;
+}
+
+#sticky.stick {
+    position: fixed;
+    top: 0;
+    z-index: 10000;
+    border-radius: 0 0 0.5em 0.5em;
+}
+
+#message-form-div {
+    padding: 0.009ex;
+    font-size: 2em;
+    border-radius: 0.5ex;
+    background-color: #FFFFFF;
+    width:100%;
+    padding-top:20px;
+    padding-bottom:0px;
+}
+
+#message-form-div.stick {
+    position: fixed;
+    top: 0;
+    z-index: 10000;
+    border-radius: 0 0 0.5em 0.5em;
+}
+
+.how-it-works{
+  color:#0092A3;
+}
+
+.how-it-works-text{
+    color:#B28000;
+}
+
+ul li {
+    color:#B28000;
+}
+
+ul li span {
+    color: black;
+}
+.disclamer-text{
+  font-size:11px;
+  margin-left:100px;
+}
+.right {
+    float: right;
+}
+
+.center{
+  float:center;
+  
+}
+
+.spaceright{
+  
+  margin-left:10px;
+}
+
+.fix-order-instruction-height{
+  overflow: scroll;
+  height:100px;
+}

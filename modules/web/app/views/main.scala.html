@@ -1,0 +1,285 @@
+@import fieldtemplates._
+@import helper._
+@(title: String)(loginForm: Form[web.Application.Login]=null)(content: Html)
+
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	  <title>@title</title>
+	  <!--favicon -->
+	  <link rel="shortcut icon" href="@routes.Assets.at("images/favicon_48.ico")">
+	  <link rel="icon" href="@routes.Assets.at("images/favicon_48.ico")">
+	  <!-- custom css -->
+	  <link href="@routes.Assets.at("bootstrap/css/bootstrap.min.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("css/admin.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("css/tablecloth.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("fontawesome/css/font-awesome.min.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("css/labelLike.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("ccicons/cc-icons.css")" rel="stylesheet" media="screen">
+	  <link href="@routes.Assets.at("css/mycss.css")" rel="stylesheet" media="screen">
+	  <!-- fonts -->
+	  <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+	</head>
+      <body>
+     
+      <div class="container"><!-- header container  -->
+	<div class="wide">
+	  <div class="col-xs-4">
+	      <div><img class="img-responsive" src="@routes.Assets.at("images/preferred_papers_logo_4.png")"></img></div>
+	      <div class="slogan">For Quality Papers</div>
+	  </div>
+	  <div class="col-xs-2 col-xs-offset-1">
+	      <i></i>
+	  </div>
+	  <div class="col-xs-3 col-xs-offset-1">
+	      <div>Skype:</div>
+	      <div>Mobile: </div>
+	  </div>
+	</div>
+    <!--start nav -->
+    <!-- Navigation -->
+    </div><!--end header container -->
+    
+    <div class="container"> <!--start navigation container -->
+      <nav class="navbar navbar-default" role="navigation">
+       
+            <!-- Brand and toggle get grouped for better mobile display --
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+               
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li><a  href="@controllers.web.routes.Application.essay()" >Custom Essay</a></li>
+			<li class="divider-vertical"></li>
+			<li><a href="@controllers.web.routes.Application.bookReport()">Book report</a></li>
+			<li class="divider-vertical"></li>
+			<li> <a href="@controllers.web.routes.Application.researchPaper()">Research paper</a></li>
+			<li class="divider-vertical"></li>
+			
+			<li>
+				<a href="@controllers.web.routes.Application.dissertation()" data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle">Dissertation Services <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+				  <li><a href="@controllers.web.routes.Application.dissertation()#thesis">Thesis paper</a></li>
+				  <li class="divider"></li>
+				  <li><a href="@controllers.web.routes.Application.dissertation()#dissertation-proposal">Dissertation-proposal</a></li>
+				  <li class="divider"></li>
+				  <li><a href="@controllers.web.routes.Application.dissertation()#abstract">Dissertation-Abstract</a></li>
+				  <li class="divider"></li> 
+				  <li><a href="@controllers.web.routes.Application.dissertation()#introduction">Dissertation-Introduction</a></li>
+				  <li class="divider"></li>                                      
+				  <li><a href="@controllers.web.routes.Application.dissertation()#literature-review">Dissertation-Literature Review</a></li>
+				  <li class="divider"></li>
+				  <li><a href="@controllers.web.routes.Application.dissertation()#methodology">Dissertation-Metholody</a></li>
+				  <li class="divider"></li> 
+				  <li><a href="@controllers.web.routes.Application.dissertation()#discussion">Dissertation-Discussion,</a></li>
+				  <li class="divider"></li> 
+				</ul>
+			</li>
+			
+			<li class="divider-vertical"></li>
+			<li><a href="@controllers.web.routes.Application.coursework()">Coursework</a></li>
+			<li class="divider-vertical"></li>
+			<li> <a href="@controllers.web.routes.Application.editing()">Editing Services</a></li>
+			<li class="divider-vertical"></li>
+			<li><a href="@controllers.web.routes.Application.admision()">Admision Services</a></li>
+			<li class="divider-vertical"></li>
+			<li> <a href="@controllers.web.routes.Application.termPaper()">Term Paper</a></li>
+			<li class="divider-vertical"></li>
+			<li>
+				<a href="#" data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle">See More<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+				    <li><a href="@controllers.web.routes.Application.mathProblem()">Math problems</a></li>
+				    <li class="divider"></li>
+				    <li><a href="@controllers.web.routes.Application.programming()">Computer programming</a></li>
+				    <li class="divider"></li>
+				    <li><a href="@controllers.web.routes.Application.proofReading()">Proofreading</a></li>
+				    <li class="divider"></li>
+				    <li><a href="@controllers.web.routes.Application.homework()">Homework help</a></li>
+				    <li class="divider"></li>  
+				    <li><a href="@controllers.web.routes.Application.labReport()">Lab report</a></li> 
+				    <li class="divider"></li>                                      
+				    <li><a href="@controllers.web.routes.Application.reviewWriting()">Review writing</a></li> 
+				    <li class="divider"></li>
+				    <li><a href="@controllers.web.routes.Application.articleCritique()">Article critique</a></li> 
+				    <li class="divider"></li>
+				    <li><a href="@controllers.web.routes.Application.presentation()">Presentation</a></li> 
+				    <li class="divider"></li>
+				</ul>
+			</li>
+			
+		</ul>
+            </div>
+            <!-- /.navbar-collapse -->
+
+        <!-- /.container -->
+	</nav>
+	<!-- end nav -->
+	</div><!-- end of topnavigation container -->
+	<div class="container">
+			<div class="col-xs-2" id="left-column"><!-- start of navigation column -->
+				<div>
+					<div class="left-panel-section">
+						<ul class="nav nav-pills nav-stacked" id="navigation">
+							<li><a href="@controllers.web.routes.Application.index()">Home</a></li>
+							<li><a href="@controllers.web.routes.Application.aboutUs()">About Us</a></li>
+							<li><a href="@controllers.web.routes.Application.newOrder()"><span class="order-text"><b>Order Now</b></span></a></li>
+							<li><a href="@controllers.web.routes.Application.howItWorks()">How it works</a></li>
+							<li><a href="@controllers.web.routes.Application.prices()">Prices</a></li>
+						</ul>
+					</div>
+					<div class="panel panel-empty left-panel-section urgency-left-section">
+						<div class="text-center">
+							<div class="">3 Hours? 6 Hours?</div>
+							<div class="glyphicon glyphicon-time"></div>
+							<div class="">Whatever the urgency, We Deliver.</div>
+							<div>
+								<p align="center"><a href="@controllers.web.routes.Application.newOrder()" class="btn btn-warning">&nbsp;&nbsp;&nbsp;Order Now&nbsp;&nbsp;&nbsp;</a></p>
+							</div>
+						</div>
+					</div>
+				    </div>
+
+				<div class="panel panel-empty left-panel-section">
+				    <div class="text-center">
+					  <img src="@routes.Assets.at("img/te-moneyback-guarantee-2.png")" alt="PreferredPapers Money Back Guarantee" class="img-responsive"></img>
+				    </div>
+				</div>	
+			</div><!-- end of navigation column  -->
+			<div class="col-xs-7" id="mainbody"><!-- start of main body -->
+				@content
+			</div><!-- end of main body column -->
+			<div class="col-xs-3 right-section">
+			  @if(session.get("email")==null){
+				  @if(loginForm!=null){
+				  <div id="myform" class="r-section"><!-- start of sidebar column -->
+							
+							@if(flash.containsKey("success")){
+								<div class="alert alert-success">
+									@flash.get("success")
+								</div>
+							}
+							
+							@if(flash.containsKey("error")){
+								<div class="alert alert-danger">
+									@flash.get("error")
+								</div>
+							}
+							@helper.form(action=controllers.web.routes.Application.authenticate(),'id->"loginform"){
+								@text2(loginForm("email"),
+									label = "Email",
+									placeholder="Email"
+									)
+								@password2(loginForm("password"),
+									label= "Password",
+									placeholder="Password")
+								<div class="form-group">
+									<input type="submit" class="btn btn-primary" value="LOGIN"> 
+									<a href="@controllers.web.routes.Application.forgotPassword()">Forgot password?</a>
+								</div>
+							}
+				  </div>
+				 }
+			  }else{
+			  <div id="myform" class="r-section"><!-- start of sidebar column -->
+					  Welcome, @session.get("f_name").
+					  <div class="form-group">
+						  <a href="@controllers.web.client.routes.ClientActions.index()"  class="btn btn-primary">Go to my account</a>
+					  </div>
+					  <div class="form-group">
+						  <a href="@controllers.web.routes.Application.logout()"><u>Log out</u></a>
+					  </div>
+			  </div>
+			  }
+			<div class="section">
+				<div class="panel panel-default why-choose-us">
+					<div class="panel-heading"><span class="fa fa-angle-double-right"></span> Why Choose Us?</div>
+					<div class="panel-body">
+						<ul>
+						<li><span class="fa fa-check"></span> Timely Delivery</li>
+						<li><span class="fa fa-check"></span> Brilliant Quality</li>
+						<li><span class="fa fa-check"></span><i class="fa fa-icon-check"></i> 100% Legitimacy</li>
+						<li><span class="fa fa-check"></span><i class="fa fa-icon-check"></i> Assured Confidentiality</li>
+						<li><span class="fa fa-check"></span><i class="fa fa-icon-check"></i> Free Unlimited Revisions</li>
+						<li><span class="fa fa-check"></span><i class="fa fa-icon-check"></i> 24/7 Support</li>
+
+						<ul>
+					</div>
+				</div>
+			</div>
+			</div><!-- end of sidebar column -->
+		</div>	
+	</div>
+	
+	<div class="container"><!--start outer container -->
+	    <footer class="text-center"><!--start footer-->   
+		<div class="footer-below">
+		      <div class="container"><!--start container -->
+				<div class="col-xs-12">
+				    <h3>Social media</h3>
+				    <ul class="list-inline intro-social-buttons">
+					    <li>
+						    <a href="https://twitter.com/TimelyEssay" ><i class="fa fa-twitter fa-fw"></i> <span class="network-name"></span></a>
+					    </li>
+					    <li>
+						    <a href="https://www.facebook.com/timelyessay?ref=hl"><i class="fa fa-facebook fa-fw"></i> <span class="network-name"></span></a>
+					    </li>
+					    <li>
+						    <a href="https://plus.google.com/101739426538492592153/posts"><i class="fa  fa-google-plus fa-fw"></i> <span class="network-name"></span></a>
+					    </li>
+					    <li>
+						    <a href="https://www.linkedin.com/profile/view?id=402939820&trk=nav_responsive_tab_profile"><i class="fa  fa-linkedin fa-fw"></i> <span class="network-name"></span></a>
+					    </li>
+				    </ul>   
+				    <a href="@controllers.web.routes.Application.disclamer()">Disclamer</a> | 
+				    <a href="@controllers.web.routes.Application.privacyPolicy()">Privacy policy</a> | 
+				    <a href="@controllers.web.routes.Application.termsAndConditions()">Terms &amp; Conditions</a><br>
+				    TimelyEssay.com Copyright &copy;2015
+				    <p class="disclamer-text"><strong>DISCLAIMER:</strong>The company is providing content writing services such as term paper, essays, dissertation, creative writing and research papers for uses limited to proffesional and academic studying and reference. Therefore, the content should not be subjected to uses that may amount to academic cheating. Furthermore, the Company will not be resposible to third parties for the unathorized  use of its product.</p>
+				</div>
+		      </div><!--close container -->
+		</div>
+	    </footer><!--End footer-->
+			<div class="row">
+			</div>
+	</div><!--close outer container -->
+	<!-- Pure Chat Snippet -->
+<script type='text/javascript'>(function () { var done = false;var script = document.createElement('script');script.async = true;script.type = 'text/javascript';script.src = 'https://app.purechat.com/VisitorWidget/WidgetScript';document.getElementsByTagName('HEAD').item(0).appendChild(script);script.onreadystatechange = script.onload = function (e) {if (!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')) {var w = new PCWidget({ c: '3449e2d7-6c5f-43e8-a338-c0693b84dd61', f: true });done = true;}};})();</script>
+	<!-- End Pure Chat Snippet -->
+	<!-- Scripts -->
+	<script src="@routes.Assets.at("js/jquery/jquery.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrap/js/bootstrap-hover-dropdown.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("bootstrapvalidator/js/bootstrapValidator.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/loginform.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/menu.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/clientorderformvalidation.js")" type="text/javascript"></script> 
+	<script src="@routes.Assets.at("js/recoverpassword.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("moment/moment.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/waypoint/lib/jquery.waypoints.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/waypoint/lib/shortcuts/sticky.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/clientorder.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/newpassword.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("js/datejs/date.js")" type="text/javascript"></script> 
+	<script src="@routes.Assets.at("js/couponcode.js")" type="text/javascript"></script>
+	<!--Scripts -->
+	<!--google analytics script -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-60253886-1', 'auto');
+		ga('send', 'pageview');
+	</script>	
+	<!--End google analytics script -->
+  </body>
+</html>

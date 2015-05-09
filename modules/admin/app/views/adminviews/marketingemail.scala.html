@@ -1,0 +1,36 @@
+@(newMailForm: Form[admincontrollers.AdminActions.NewEmail])(text: String)
+
+@adminmain("Affiliate Program"){
+			<div class="col-xs-10">
+						@if(flash.containsKey("client_marketing_mail_success")){
+							<div class="alert alert-success">
+								@flash.get("client_marketing_mail_success")
+							</div>
+						}
+						
+						@if(flash.containsKey("client_marketing_mail_error")){
+							<div class="alert alert-danger">
+								@flash.get("client_marketing_mail_error")
+							</div>
+						}	
+						
+						@helper.form(action=controllers.admincontrollers.routes.AdminActions.sendMarketingEmail(), 
+																			'class->"form-horizontal", 'id-> "email-invitation-form"){								
+									
+									@fieldtemplates.text2(newMailForm("email"),
+														label = "Email: ",
+														placeholder="Email")
+														
+									@fieldtemplates.textarea2(newMailForm("message"),
+														rows = "5",
+														value = text,
+														label = "Message",
+														placeholder="")
+			
+									<div class="form-group" style="float:right">
+														<input type="submit" class="btn btn-primary" value="Send Mail">
+									</div>
+									
+							 }	
+						</div>
+}

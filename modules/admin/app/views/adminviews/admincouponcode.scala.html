@@ -1,0 +1,70 @@
+@(couponForm: Form[models.admincoupon.AdminReferalCode])(adminCouponList: List[models.admincoupon.AdminReferalCode])
+@adminmain("Timely Essay | For Quality Service"){
+	<div id="admin-coupon-code-form" class="col-xs-10">
+		<br>
+		<p>
+			This form allows you to generate marketing coupon codes. The first coupon code belongs to you. Note that you can generate as many codes as possible to give to your friends. Let the clients know that when they use the coupon codes, they get 12% discount on their first order, whose value is $60 and above.
+		</p>
+		
+		<div class="new-msg-div row">
+			    @helper.form(action=controllers.admincontrollers.routes.AdminActions.generateAdminCouponCode(),'class->"form-horizontal",'id->"admincouponcodeform", 'name->"admincouponcodeform"){
+				    
+				    @if(flash.containsKey("save-admin-code-success")){
+					    <div class="alert alert-success">
+						    @flash.get("save-admin-code-success")
+					    </div>
+				    }
+				    
+				    <h4>Create your coupon codes:</h4>
+				    @fieldtemplates.text2(couponForm("full_name"),
+									    label = "Full Name: ",
+									    placeholder="Your full name here...")
+
+				    <div class="form-group" style="float:right">
+						<input type="submit" class="btn btn-primary" value="Generate Code">
+				    </div>
+					      
+				    
+			    }
+		</div>
+		
+		<hr>
+		@if(flash.containsKey("admin-code-deleted")){
+			<div class="alert alert-success">
+				@flash.get("admin-code-deleted")
+			</div>
+		}
+		@if(flash.containsKey("admin-code-not-found")){
+			<div class="alert alert-danger">
+				@flash.get("admin-code-not-found")
+			</div>
+		}
+		<h4> All Your Coupon Codes</h4>
+		@if(adminCouponList.size()>0){
+			<table>
+				<thead>
+				  <tr>
+				    <th>Name</th>
+				    <th>Coupon code</th>
+				    <th>Earnings</th>
+				    <th>Delete code</th>
+				  </tr>
+				</thead>
+				<tbody>
+					 @for(adminCodes<-adminCouponList){
+						<tr>
+							<td> @adminCodes.full_name </td>
+							<td> @adminCodes.code </td>
+							<td> $ @models.admincoupon.AdminReferalEarning.getAdminTotalCodeEarnings(adminCodes)0</td>
+							<td> <a onclick="del('@controllers.admincontrollers.routes.AdminActions.deleteCouponCode(adminCodes.code)')" href="" title="Delete coupon code @adminCodes.code"><i class="fa fa-trash fa-lg"></i>
+</a></td>
+						</tr>
+					 }
+				</tbody>
+			</table>
+		}else{
+			<h5>You do not have any coupon codes</h5>
+		}
+		
+	</div>
+}

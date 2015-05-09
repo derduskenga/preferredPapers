@@ -1,0 +1,112 @@
+@(clientOrders: orders.Orders)(loginForm: Form[web.Application.Login])
+@import models.orders._
+@main("Timely Essay | Order summary")(loginForm){
+  <h5>Order Summary for Order #@clientOrders.order_code</h5>
+  <div id="order-summary">
+    <table>
+      <tr>
+	<td>Document type</td>
+	<td>@clientOrders.orderDocumentType.document_type_name</td>
+      </tr>      
+	
+      @if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() != OrderCppMode.CppModes.perassignment.toString()){
+	<tr>      
+	  <td>Subject area</td>
+	  <td>@clientOrders.orderSubject.subject_name</td>
+	</tr>
+      }
+      
+      <tr>
+	<td>Topic</td>
+	<td>@clientOrders.topic</td>
+      </tr>
+      
+      <tr>
+	<td>Style</td>
+	<td>@clientOrders.writing_style</td>
+      </tr>
+      
+      <tr>
+      	<td>No. of sources/references</td>
+	<td>@clientOrders.no_of_references</td>
+      </tr>
+           
+      <tr>
+      	<td>Want order after</td>
+	<td> <span>@clientOrders.getDeadlineObject(clientOrders.document_deadline).deadline_value</span> <span>@clientOrders.getDeadlineObject(clientOrders.document_deadline).deadline_unit</span> <span>(On @clientOrders.order_deadline.format("YYYY-MM-dd HH:mm"))</span> </td>
+      </tr>
+      
+      @if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perassignment.toString()){
+	<tr>
+	  <td>Operating system</td>
+	  <td>@clientOrders.operating_system</td>
+	</tr>
+	
+	<tr>
+	  <td>Programming language</td>
+	  <td>@clientOrders.prog_language</td>
+	</tr>
+	
+	<tr>
+	  <td>Database</td>
+	  <td>@clientOrders.database</td>
+	</tr>
+	     
+	<tr>
+	  <td>Number of assignments</td>
+	  <td>@clientOrders.number_of_units</td>
+	</tr>      
+      }
+      @if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perpage.toString()){
+	<tr>
+	  <td>Number of pages</td>
+	  <td>@clientOrders.number_of_units</td>
+	</tr>
+	
+	<tr>
+	  <td>Spacing</td>
+	  <td>@clientOrders.spacing.spacing</td>
+	</tr>
+      }
+      
+      @if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perquestion.toString()){
+	<td>Number of questions</td>
+	  <td>@clientOrders.number_of_units</td>
+	</tr>
+	<tr>
+	  <td>Spacing</td>
+	  <td>@clientOrders.spacing.spacing</td>
+	</tr>
+      }
+      
+      @if(clientOrders.additions.size()>0){
+	<tr>
+	  <td>Additions</td>
+	  <td>
+	    @for(aList<-clientOrders.additions){
+	      @aList.ui_label
+	      (+ @clientOrders.orderCurrence.currency_symbol_2 @( Math.round(aList.additional_price*clientOrders.number_of_units*clientOrders.orderDocumentType.additions_factor*100)/100.00))
+	      <br><br>
+	    }
+	  </td>
+	</tr> 	
+      }
+      
+      
+      <tr>
+	<td colspan="2"><h3 align="center">Order Total: @clientOrders.orderCurrence.currency_symbol_2 @(Math.round(clientOrders.order_total*clientOrders.orderCurrence.convertion_rate*100)/100.00)</h3></td>
+      </tr>
+
+    </table>
+    
+    
+    <table>
+      <tr>
+      	<td><p align="right"><a href="@controllers.web.routes.Application.editOrder(clientOrders.order_code)" class="btn btn-primary">&lt;&lt; Edit Order</a></p></td>
+	<td><p><a href="@controllers.web.routes.Application.setUserSession(clientOrders.order_code)" class="btn btn-primary">Proceed to pay&gt;&gt;</a></p></td>
+      </tr>        
+    </table>
+    
+  </div>
+  
+}

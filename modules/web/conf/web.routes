@@ -1,0 +1,94 @@
+# WEB Routes
+# This file defines WEB application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET							/				controllers.web.Application.index()
+POST	   						/login				controllers.web.Application.authenticate()
+GET	   						/logout				controllers.web.Application.logout()
+GET							/disclamer			controllers.web.Application.disclamer()
+GET							/privacypolicy			controllers.web.Application.privacyPolicy()
+GET							/termsandconditions		controllers.web.Application.termsAndConditions()
+GET							/essay				controllers.web.Application.essay()
+GET							/bookreport			controllers.web.Application.bookReport()
+GET							/researchpaper			controllers.web.Application.researchPaper()
+GET							/coursework			controllers.web.Application.coursework()
+GET							/editing			controllers.web.Application.editing()
+GET							/admision			controllers.web.Application.admision()
+GET							/dissertation			controllers.web.Application.dissertation()
+GET							/termpaper			controllers.web.Application.termPaper()
+GET							/mathproblem			controllers.web.Application.mathProblem()
+
+GET							/programming			controllers.web.Application.programming()
+GET							/proofreading			controllers.web.Application.proofReading()
+GET							/homework			controllers.web.Application.homework()
+GET							/labreport			controllers.web.Application.labReport()
+GET							/reviewwriting			controllers.web.Application.reviewWriting()
+GET							/articlecritique		controllers.web.Application.articleCritique()
+GET							/presentation			controllers.web.Application.presentation()
+GET							/prices				controllers.web.Application.prices()
+GET							/howitworks			controllers.web.Application.howItWorks()
+GET							/aboutus			controllers.web.Application.aboutUs()
+
+
+#client pages
+GET	   		/mydashboard				controllers.web.client.ClientActions.index()
+GET			/mydashboard/payfororder		controllers.web.client.ClientActions.postFrom2Checkout()
+POST			/mydashboard/savemessage/:order_code	controllers.web.client.ClientActions.saveClientMessage(order_code:Long)
+GET			/mydashboard/order/messages/:order_code	controllers.web.client.ClientActions.orderMessages(order_code:Long)
+GET			/mydashboard/affiliateprogram		controllers.web.client.ClientActions.affiliateProgram()
+POST			/mydashboard/affiliateprogram/sendinvitationmail		controllers.web.client.ClientActions.sendInvitationEmail()
+GET			/mydashboard/preferredwriters		controllers.web.client.ClientActions.preferredWriters()
+POST			/mydashboard/savepreferredwriter	controllers.web.client.ClientActions.savePreferredWriter()
+
+#client reset password
+GET 			/reset-password				controllers.web.Application.resetPassword(token:String?="")					
+POST 			/reset-password				controllers.web.Application.saveResetPassword()
+
+#generate unique referral code 
+GET			/mydashboard/generatecode				controllers.web.client.ClientActions.generateUniqueCode()
+
+#placing a new order 
+GET			/neworder					   controllers.web.Application.newOrder()	
+POST			/submitorder					   controllers.web.Application.saveClientOrder()
+POST			/fetch/countriesjson				   controllers.web.Application.fetchCountries()
+POST			/fetch/orderdocument/:docId			   controllers.web.Application.fetchDocument(docId:Long)
+POST			/fetch/currency					   controllers.web.Application.fetchCurrency()
+POST			/fetch/additions				   controllers.web.Application.fetchAdditions()
+POST			/fetch/level					   controllers.web.Application.fetchLevelOfWriting()
+POST 			/fetch/spacing					   controllers.web.Application.fetchSpacing()
+
+POST			/fetch/clientcoupons				   controllers.web.Application.fetchClientReferalCode()
+POST			/fetch/admincoupons				   controllers.web.Application.fetchAdminReferalCode()
+
+GET			/neworder/ordersummary/:order_code		   controllers.web.Application.previewOrder(order_code:Long)
+GET			/neworder/edit/:order_code			   controllers.web.Application.editOrder(order_code:Long)
+GET			/forgotpassword					   controllers.web.Application.forgotPassword()
+POST			/recoverpassword				   controllers.web.Application.recoverPassword()
+GET			/mydashboard/order/proceedtopay/:order_code	   controllers.web.client.ClientActions.proceedToPay(order_code:Long)
+GET			/mydashboard/order/pay/:order_code		   controllers.web.client.ClientActions.pay(order_code:Long)
+GET			/user/sessuser/:order_code			   controllers.web.Application.setUserSession(order_code:Long)
+GET			/mydashboard/order/view/:order_code		   controllers.web.client.ClientActions.clientViewOrder(order_code:Long)
+POST			/mydashboard/order/file/upload/:order_code	   controllers.web.client.ClientActions.saveOrderFile(order_code:Long)
+GET			/mydashboard/order/file/downloadorderfile/:file_id controllers.web.client.ClientActions.downloadOrderFile(file_id:Long)		
+GET			/mydashboard/order/file/downloadproductfile/:file_id/:date	controllers.web.client.ClientActions.downloadProductFile(file_id:Long,date:String)
+POST 			/mydashboard/order/volunteerdeadlineextension/:new_date/:order_code	controllers.web.client.ClientActions.VoluntaryDeadlineExtension(new_date:String,order_code:Long)
+POST			/mydashboard/order/fetchdeadline/:order_code			controllers.web.client.ClientActions.fetchDeadline(order_code:Long)
+POST			/mydashboard/order/askforrevision/:order_code/:revision_deadline			controllers.web.client.ClientActions.askForRevision(order_code:Long,revision_deadline:String)
+POST			/mydashboard/order/surveyfeedback/:order_code/:rating		controllers.web.client.ClientActions.surveyFeedback(order_code:Long,rating:Int)
+GET			/mydashboard/profile					controllers.web.client.ClientActions.myProfile()
+POST			/mydashboard/profile/changepassword			controllers.web.client.ClientActions.changePassword()
+POST			/mydashboard/profile/editprofile			controllers.web.client.ClientActions.editProfile()
+POST		/mydashboard/order/approveorder/:order_code	controllers.web.client.ClientActions.approveOrderProduct(order_code:Long)
+POST		/mydashboard/order/:order_code/:message_id	controllers.web.client.ClientActions.viewOrderMessage(order_code:Long,message_id:Long)
+POST		/mydashboard/order/messages/messagesactionpages/:status/:date/:message_id/:order_code	controllers.web.client.ClientMessageActions.respondToAdditionalPages(status:Boolean,date:String,message_id:Long,order_code:Long)		
+POST		/mydashboard/order/messages/messagesactionextenddeadline/:status/:date/:message_id/:order_code	controllers.web.client.ClientMessageActions.respondToExtendDeadlineExtension(status:Boolean,date:String,message_id:Long,order_code:Long)
+
+
+
+
+# Map static resources from the /public folder to the /assets URL path
+# GET     /assets/*file               controllers.web.Assets.versioned(path="/public", file: Asset)
+#common routes
+
+->  / common.Routes

@@ -1,0 +1,11 @@
+@(field:Field,label:String="",size:String,maxSize:String,placeholder:String="",activity:String="disabled",help:String="", fieldsizing:String="")
+@label<input type="text"
+	name="@field.name"
+	size="@size" 
+	maxlength="@maxSize" 
+	id="@field.id"
+	value="@field.value.getOrElse("")"
+	class="form-control @fieldsizing"
+	placeholder="@placeholder"
+	@if(activity=="readonly"){readonly}>
+

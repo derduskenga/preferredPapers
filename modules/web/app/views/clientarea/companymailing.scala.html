@@ -1,0 +1,14 @@
+@(field: Field, label: String = "CHANGEME",isMultiple: Boolean=false, 
+help: String = "",default:String="Please select a value",divClass:String="col-sm-10",includeStaticDefault: Boolean = true,fieldcontrolattr:String="",fieldsizing:String="",clientobject:models.client.Client)
+
+  <div class="form-group @if(field.hasErrors) {has-error}">
+    <label class="col-sm-3 control-label" for="@field.id">@label</label>
+    <div class="@divClass">
+      <select class="form-control @fieldsizing" id="@field.id" name="@field.name">
+	<option id="yes" value="yes" @if(clientobject.receive_company_mail){selected}>YES</option>
+	<option id="no" value="no" @if(!clientobject.receive_company_mail){selected}>NO</option>
+      </select>
+      <span class="help-block">@help</span>
+      <span class="help-block">@{field.error.map {error => error.message }}</span>
+    </div>
+  </div>

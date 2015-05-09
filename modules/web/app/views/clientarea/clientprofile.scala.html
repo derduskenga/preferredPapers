@@ -1,0 +1,237 @@
+@(client:models.client.Client)(clientForm:Form[models.client.Client])(countryMap:Map[Map[Long,String],Boolean])
+@import models.orders._
+@import helper._
+@import fieldtemplates._
+
+@clientmain("My Profile"){
+   @if(client.id!=null){
+      <div id="my-complete-profile">
+	  <h4>My Profile</h4>
+	  <table>
+	    <tr>    
+	      <td align="right">First name</td>
+	      <td>@client.f_name</td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Last name</td>
+	      <td>@client.l_name</td>
+	    </tr>
+
+	    <tr>
+	      <td align="right">Email/Login</td>
+	      <td>@client.email</td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Password</td>
+	      <td>
+		* * * * * 
+		<a href="#" tabindex="0" class="btn btn-sm btn-primary" role="button" data-toggle="popover" id="change-password"
+		  data-trigger="click focus" title="<strong>Change password</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span align='right'><a href='#' id='close-popover'><i class='fa fa-times'></i>
+</></span>" data-content="<form id='change_password_form' name='change_password_form' method='post' action=''>
+		  <div id='password_change_response'>  </div>
+		  <script>$('#change_password_form').bootstrapValidator({
+		    message: 'This value is not valid',
+		    live: 'enabled',
+		    
+		    feedbackIcons: {
+			valid: 'fa fa-check',
+			invalid: 'fa fa-times',
+			validating: 'fa fa-refresh'
+		    },
+		  fields:{
+	    r_password:{
+	      validators:{
+		notEmpty:{
+		  message:'Current password is required'
+		}
+	      }
+	    },
+	    new_password:{
+	      validators:{
+		notEmpty:{
+		  message:'New password is required'
+		},
+		identical:{
+		  field: 'confirm_password',
+		  message: 'New password and its confirm do not match'
+		}
+	      }
+	    },
+	      confirm_password:{
+	      validators:{
+		notEmpty:{
+		  message:'Confirm new password'
+		},
+		identical:{
+		  field: 'new_password',
+		  message: 'New password and its confirm do not match'
+		}
+	      }
+	    }  
+	  }
+	  });
+	  $('#change-password-btn').click(function(event){
+	    event.preventDefault();
+	    var current_password = $('#r_password').val();
+	    var new_password = $('#new_password').val();
+	    $('#change-password-loading-gif').removeClass('hidden');
+	    $.post('/mydashboard/profile/changepassword',{current_password:current_password,new_password:new_password}, function(data){		
+	      if(data['success'] == 1){
+		$('#password_change_response').addClass('alert-success');
+		$('#password_change_response').text(data['message']);
+		$('#r_password').val('');
+		$('#new_password').val('');
+		$('#confirm_password').val('');
+		$('#change-password-loading-gif').addClass('hidden');
+	      }else{
+		$('#password_change_response').addClass('alert-danger');
+		$('#password_change_response').text(data['message']);
+		$('#r_password').val('');
+		$('#new_password').val('');
+		$('#confirm_password').val('');
+		$('#change-password-loading-gif').addClass('hidden');
+	      }
+	    },'json');
+	    
+	  });
+	  
+	  $('#close-popover').click(function(event){
+	    event.preventDefault();
+	    $('#change-password').popover('hide');
+	  });
+	</script>
+		  <div>Current password:<input type='password' id='r_password' class='form-control input-sm' name='r_password'/> </div> <div>New password:<input class='form-control input-sm' type='password' id='new_password' name='new_password'/> </div> <div>Confirm password:<input class='form-control input-sm' type='password' id='confirm_password' name='confirm_password'/></div><br><div class='form-group'><button type='submit' class='btn btn-primary' id='change-password-btn'> Submit password </button> <span class='hidden' id='change-password-loading-gif'><img src='@routes.Assets.at("images/loading.gif")'/></span> </div></form>">
+		  Change password
+		</a>
+	      </td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Country</td>
+	      <td>@client.country.nicename</td>
+	    </tr>
+	    
+	    <tr>
+	      <td align="right">Phone number #1</td>
+	      <td>@client.country_code @client.area_code @client.phone_number</td>
+	    </tr>
+	    
+	    @if(!client.alternative_phone.equals("")){
+	      <tr>
+		<td align="right">Phone number #2</td>
+		<td>@client.alternative_phone</td>
+	      </tr>
+	    }
+	    
+	  </table>
+      </div>
+      
+      <div>
+	<p align="center"><button id="edit-my-profile-btn" class="btn btn-primary">
+	  Edit profile
+	</button></p>
+      </div>
+      
+      <div id="profile-edit-div" class="hidden row">
+	<h4>Edit Profile</h4>
+	<table>
+	  @helper.form(action=controllers.web.client.routes.ClientActions.editProfile(),'class->"form-horizontal",'id->"edit_profile", 'name->"edit_profile"){
+	   <input type="hidden"  value="@clientForm("id").valueOr("")" name="id"/>
+	   <tr>
+	      <td>
+		@text(clientForm("f_name"),
+		  label = "First Name",
+		  placeholder = "First Name",
+		  divClass="col-sm-4",
+		  fieldcontrolattr="readonly",
+		  fieldsizing="input-sm")
+	      </td>
+	    </tr>
+	    
+	    <tr>
+	      <td>
+		@text(clientForm("l_name"),
+		  label = "Last Name",
+		  placeholder = "Last Name",
+		  divClass="col-sm-4",
+		  fieldcontrolattr="readonly",
+		  fieldsizing="input-sm")
+	      </td>
+	    </tr>
+	    
+	    <tr>
+	      <td>	
+		@text(clientForm("email"),
+		  label = "Email",
+		  placeholder = "Email",
+		  divClass="col-sm-4",
+		  fieldcontrolattr="readonly",
+		  fieldsizing="input-sm")
+	      </td>
+	    </tr>
+	    
+	    <tr>
+	      <td>	
+		@fieldtemplates.countryselect(clientForm("client_country"),
+		  label = "country",
+		  fieldcontrolattr= "readonly",
+		  optionMap=countryMap,
+		  fieldsizing="input-sm",
+		  default="Select your country",
+		  divClass="col-sm-4"
+		)	  
+	      </td>
+	    </tr>
+	    <input type="hidden"  value="@clientForm("area_code").valueOr("")" name="area_code"/>
+	    <input type="hidden"  value="@clientForm("country_code").valueOr("")" name="country_code"/>
+	    <input type="hidden"  value="@clientForm("phone_number").valueOr("")" name="phone_number"/>
+	    <tr>
+	      <td>	
+		@fullphone(clientForm("area_code"),
+		  label = "Phone nunber #1",
+		  placeholder = "",
+		  country_code=client.country_code,
+		  area_code=client.area_code,
+		  phone_number=client.phone_number,
+		  divClass="col-sm-4",
+		  fieldsizing="input-sm")
+	      </td>
+	    </tr> 
+	    
+	    <tr>
+	      <td>
+		@text(clientForm("alternative_phone"),
+		  label = "Phone nunber #1",
+		  placeholder = "Alternative phone",
+		  divClass="col-sm-4",
+		  fieldsizing="input-sm")
+	      </td>
+	    </tr>    
+	    
+	    <tr>
+	      <td>
+		@companymailing(clientForm("receive_company_mail"),
+		  label = "Receive company information via mail",
+		  divClass="col-sm-4",
+		  clientobject = client,
+		  fieldsizing="input-sm")    
+	      </td>
+	    </tr>   
+	    
+	    <tr>
+	      <td>	
+		<div class="form-group" align="center">
+		  <input type="submit" class="btn btn-primary" value="Save profile" id = "edit-profile-submit">
+		</div>
+	      </td>
+	    </tr>
+	    
+	  }
+	</table>
+      </div>
+    }else{
+      <strong>No details found</strong>
+    }
+}

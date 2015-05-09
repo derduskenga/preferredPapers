@@ -1,0 +1,22 @@
+@(field: Field, label: String = "CHANGEME", optionMap: Map[Long,String], isMultiple: Boolean=false, 
+help: String = "",default:String="Please select a value",divClass:String="col-sm-10",includeStaticDefault: Boolean = true,isSelected:Boolean=false)
+<!--  This teplate is named country but handle type of document, urgency and subject area-->
+  <div class="form-group @if(field.hasErrors) {has-error} @if(optionMap isEmpty){hidden}">
+    <label class="col-sm-3 control-label" for="@field.id">@label</label>
+    <div class="@divClass">
+      <select
+        class="form-control"
+        id="@field.id"
+        name="@if(isMultiple) {@(field.name + "[]")} else {@field.name}"
+        @if(isMultiple) {multiple="multiple"}>
+        @if(!isMultiple) {@if(includeStaticDefault){<option class="blank" value="">@default</option>}}
+	  if(!optionMap.isEmpty){
+	    @for((keys,values) <- optionMap){
+	      <option id="@keys" value="@keys" @if(isSelected) {selected}>@values</option>
+	    }
+	  }
+      </select>
+      <span class="help-block">@help</span>
+      <span class="help-block">@{field.error.map { error => error.message }}</span>
+    </div>
+  </div>

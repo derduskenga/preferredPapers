@@ -1,0 +1,31 @@
+@(users: List[models.admin.adminmodels.AdminUser])
+@adminmain("Manage Users"){
+		<div class="col-xs-10	">
+		<table class="table table-striped table-bordered" style="table-layout:fixed;">
+			<thead>
+				<tr>
+					<th class="col-sm-2">First Name</th>
+					<th class="col-sm-2">Last Name</th>
+					<th class="col-sm-3">Email</th>
+					<th class="col-sm-2">Admin Level</th>
+					<th class="col-sm-2">State</th>
+					<th class="col-sm-1">More Actions</th>
+				</tr>	   
+			</thead>
+			<tbody>
+			<!--iterate through all users-->
+			 @for(user <- users){
+					<tr>
+							<td>@user.first_name</td>
+							<td>@user.last_name</td>
+							<td>@user.email</td>
+							<td>@for(role <- user.roles){@role.name,}</td>
+							<td><a class="activation-link"  onClick='deactivateUser("@controllers.admincontrollers.routes.AdminActions.deactivateAdminUser(user.admin_user_id)")'><span data-toggle="tooltip" data-placement="bottom" title="@if(user.active){Deactivate User}else{Activate User}" ><i id="span-@user.admin_user_id" class="fa @if(user.active){fa-check}else{fa-ban} span-icons"></i></span></a><span class="user-state-text" id="status-@user.admin_user_id">@if(user.active){ Active}else{Deactivated}</span></td>
+							
+							<td><a href="@controllers.admincontrollers.routes.AdminActions.editAdminUser(user.admin_user_id)"><span data-toggle="tooltip" data-placement="bottom" title="Edit User Details"><i class="fa fa-pencil-square-o"></i></span></a></td>
+					</tr>
+			 }
+			</tbody>
+		</table>
+		</div>
+}

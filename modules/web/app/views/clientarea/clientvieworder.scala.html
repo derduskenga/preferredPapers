@@ -1,0 +1,353 @@
+@(clientOrders: models.orders.Orders)(orderFilesForm: Form[models.orders.OrderFiles])(unread_messages:Int)
+@import models.orders._
+@import helper._
+@clientmain("My Orders"){
+  @if(clientOrders.order_id!=null){
+    <h3>Order details</h3>
+    <div>
+      <table>
+	
+	
+	@if(!clientOrders.is_paid){
+	  <tr>
+	    <td><p class="phone-number">Order NOT PAID</p></td>
+	    <td><a class="btn btn-danger" href="@controllers.web.client.routes.ClientActions.proceedToPay(clientOrders.order_code)">Pay for Order</a></td>
+	  </tr>
+	}else{
+		@if(clientOrders.checkIfOrderIsFullyPaid(clientOrders)){
+		      <tr>
+			<td><p class="text-success">Order PAID</p></td>
+			<td>Order fully paid</td>
+		      </tr>		
+		}else{
+		      <tr>
+			<td><p class="phone-number">Order Partially paid</p></td>
+			<td><a class="btn btn-danger" href="@controllers.web.client.routes.ClientActions.proceedToPay(clientOrders.order_code)">Pay for Order</a></td>
+		      </tr>
+		}
+	
+	}
+	
+	<tr>
+		<td>Order status</td>
+		@if(clientOrders.is_complete){
+		    <td>Order Completed (Writer ID @clientOrders.freelanceWriter.writer_id)</td>
+		}else{
+		     @if(clientOrders.is_writer_assigned){<td>Assigned to @clientOrders.freelanceWriter.writer_id @if(clientOrders.on_revision){(On Revision)}</td>}else{<td>Waiting Writer Assignment</td>}
+		}
+		
+		@if(clientOrders.is_closed){<td>Order Closed</td>}
+	</tr>
+	
+	<tr>
+	  <td>Order code</td>
+	  <td>#@clientOrders.order_code</td>
+	</tr>
+
+	<tr>
+	  <td>Order status</td>
+	  <td>@if(clientOrders.is_writer_assigned == false){Awaiting writer}else{Worked on}</td>
+	</tr>
+	
+	<tr>
+	  <td>Document type</td>
+	  <td>@clientOrders.orderDocumentType.document_type_name</td>
+	</tr>      
+	  
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() != OrderCppMode.CppModes.perassignment.toString()){
+	  <tr>      
+	    <td>Subject area</td>
+	    <td>@clientOrders.orderSubject.subject_name</td>
+	  </tr>
+	}
+	
+	<tr>
+	  <td>Topic</td>
+	  <td>@clientOrders.topic</td>
+	</tr>
+	
+	<tr>
+	  <td>Style</td>
+	  <td>@clientOrders.writing_style</td>
+	</tr>
+	
+	<tr>
+	  <td>No. of sources/references</td>
+	  <td>@clientOrders.no_of_references</td>
+	</tr>
+	    
+	<tr>
+	  <td>Order deadline</td>
+	  <td><span><span><strong>Approx deadline</strong> @clientOrders.order_deadline.format("E YYYY-MM-dd HH:mm z")</span> </td>
+	</tr>
+	
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perassignment.toString()){
+	  <tr>
+	    <td>Operating system</td>
+	    <td>@clientOrders.operating_system</td>
+	  </tr>
+	  
+	  <tr>
+	    <td>Programming language</td>
+	    <td>@clientOrders.prog_language</td>
+	  </tr>
+	  
+	  <tr>
+	    <td>Database</td>
+	    <td>@clientOrders.database</td>
+	  </tr>
+	      
+	  <tr>
+	    <td>Number of assignments</td>
+	    <td>@clientOrders.number_of_units</td>
+	  </tr>      
+	}
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perpage.toString()){
+	  <tr>
+	    <td>Number of pages</td>
+	    <td>@(clientOrders.number_of_units+clientOrders.additional_pages)</td>
+	  </tr>
+	  
+	  <tr>
+	    <td>Spacing</td>
+	    <td>@clientOrders.spacing.spacing</td>
+	  </tr>
+	}
+	
+	@if(clientOrders.orderDocumentType.orderCppMode.order_cpp_mode_name.name() == OrderCppMode.CppModes.perquestion.toString()){
+	  <td>Number of questions</td>
+	    <td>@clientOrders.number_of_units</td>
+	  </tr>
+	  <tr>
+	    <td>Spacing</td>
+	    <td>@clientOrders.spacing.spacing</td>
+	  </tr>
+	}
+	
+	@if(clientOrders.additions.size()>0){
+	  <tr>
+	    <td>Additions</td>
+	    <td>
+	      @for(aList<-clientOrders.additions){
+		@aList.ui_label
+		(+ @clientOrders.orderCurrence.currency_symbol_2 @( Math.round(aList.additional_price*clientOrders.number_of_units*clientOrders.orderDocumentType.additions_factor*100)/100.00))
+		<br><br>
+	      }
+	    </td>
+	  </tr> 	
+	}      
+	
+	@if(!clientOrders.is_paid){
+	    <tr>
+	      <td>Order Total</td>	  <td><strong>@clientOrders.orderCurrence.currency_symbol_2@(Math.round(clientOrders.order_total*clientOrders.orderCurrence.convertion_rate*100)/100.00)</strong></td>
+	    </tr>
+	}
+	  <tr>
+	    <td>Messages</td>
+	    <td><a href="@controllers.web.client.routes.ClientActions.orderMessages(clientOrders.order_code)">@OrderMessages.getClientOrderMessages(clientOrders.order_code).size() (<span class="phone-number">@unread_messages Unread</span>)</a> <a href="@controllers.web.client.routes.ClientActions.orderMessages(clientOrders.order_code)" class="btn btn-primary btn-sm"> Send message for this order </a></td>
+	  </tr>
+      </table>
+    </div>
+   
+    <hr>  
+    <h3>Order description and files</h3>
+    <div id="order-description-files" class="order-files-bg">
+      <div class="fix-order-instruction-height">
+
+	  <pre>@clientOrders.order_instruction</pre>
+	
+      </div>
+      
+      @if(clientOrders.orderFiles.size()>0){
+	<div>
+	  <legend>Your order additional files</legend>
+	  <!--files will go here -->
+	  @if(flash.containsKey("orderfiledownloaderror")){
+	    <div class="alert alert-danger">
+		    @flash.get("orderfiledownloaderror")
+	    </div>
+	  }
+	  @for(orderList <- clientOrders.orderFiles){
+	    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> @orderList.file_name (@(Math.round((orderList.file_size).doubleValue()/(1024*1024)*1000)/1000.000) MB) <a href="#" class="file-shared-class" id="order-file-@orderList.id" title="click to download @orderList.file_name file">  <span class="fa fa-download file-download-icon" aria-hidden="true"></span></a><br>
+	  }
+	</div>
+      }
+      
+      <div>
+	@helper.form(action=controllers.web.client.routes.ClientActions.saveOrderFile(clientOrders.order_code),'class->"form-horizontal",'id->"orderFileForm", 'name->"orderFileForm",'enctype -> "multipart/form-data"){
+	  <fieldset>
+	    @if(flash.containsKey("fileuploadresponseerror")){
+	      <div class="alert alert-danger">
+		      @flash.get("fileuploadresponseerror")
+	      </div>
+	    }	   
+	    @if(flash.containsKey("fileuploadresponsesuccess")){
+	      <div class="alert alert-success">
+		      @flash.get("fileuploadresponsesuccess")
+	      </div>
+	    }
+	      <legend>Upload your order files</legend>
+	      <div>
+		@orderfileupload(orderFilesForm("order_file"), 
+		  label = "Upload order File",
+		  divClass="col-sm-5")
+		  <input type="hidden" id="file_upload_local_time" name="file_upload_local_time">
+		<div class="col-sm-2 form-group">
+		  <input type="submit" class="btn btn-primary" value="Upload file" id = "order-file-form-submit">
+		</div>
+	      </div>
+	      
+	  </fieldset>
+	}
+      </div>
+    </div> 
+    
+    <hr>   
+    @if(clientOrders.orderProductFiles.size()>0){
+      <h4>Order product uploads</h4> 
+	@if(flash.containsKey("orderproductfiledownloaderror")){
+	  <div class="alert alert-success">
+		  @flash.get("orderproductfiledownloaderror")
+	  </div>
+	}
+      <div id="product-uploads">
+	<table>
+	  <tr>
+	    <td><strong> Type </strong></td>
+	    <td><strong> From </strong></td>
+	    <td><strong> Name </strong></td>
+	    <td><strong> Size </strong></td>
+	    <td><strong> Upload date </strong></td>
+	  </tr>
+	  @for(productFiles <- clientOrders.orderProductFiles){
+	  <tr>
+	    <td>@productFiles.product_file_type.name() </td>
+	    <td>@productFiles.owner.name()</td>
+	    <td>@productFiles.file_name<a href="#" title="download" class="product-file-shared-class" id="product-file-@productFiles.id"><span class="fa fa-download file-download-icon"></span></a></td>
+	    <td> @(Math.round((productFiles.file_size).doubleValue()/(1024*1024)*1000)/1000.000) MB</td>
+	    <td>@(OrderMessages.clientMessageLocalTime(productFiles.upload_date,session.get("email")).format("YYYY-MM-dd HH:mm a"))</td>	
+	  </tr>
+	  }
+	  
+	  @if(clientOrders.is_complete){<tr><td colspan="5"><p align="center"><a href="#" id="approve-order-@clientOrders.order_code" class="btn btn-warning approve-order-class" @if(clientOrders.approved){disabled}>@if(clientOrders.approved){<i class="fa fa-thumbs-up"></i>
+ You have approved Order Product}else{Approve Order Product}</a></p></td></tr>}
+	  
+	</table>
+	      @if(!clientOrders.approved){<a href="#" title="extend deadline" id="extend-deadline-link"> <img height="25" width="25" src="@routes.Assets.at("images/extend-deadline.png")"/>&nbsp;&nbsp;Extend deadline</a> &nbsp;&nbsp;&nbsp;}
+	      
+	      @if(clientOrders.is_complete){
+	      
+		  @if(!clientOrders.approved){<a href="#" class='' title="Ask for revision" id="ask-for-revision-link"> <img height="25" width="25" src="@routes.Assets.at("images/revise.png")"/>&nbsp;&nbsp;Ask for revision</a> &nbsp;&nbsp;&nbsp;}
+		  
+		  <a href="#" class='' title="Fill feedback survey" id="fill-feedback-survey-link"> <img height="25" width="25" src="@routes.Assets.at("images/feedback.jpg")"/>&nbsp;&nbsp;Fill feedback survey</a>&nbsp;&nbsp;&nbsp;
+	      }
+	      
+	      <a href="@controllers.web.client.routes.ClientActions.orderMessages(clientOrders.order_code)" title="Send message to writer" id="message-to-writer-link"> <img height="25" width="25" src="@routes.Assets.at("images/message.png")"/>&nbsp;&nbsp;Send a message</a>	      
+      </div>
+      
+     <br>
+     
+     <div class="row" id="extended_deadline_response"></div>
+     <!--Extend deadline -->
+     <div id="deadline-form"> 
+      <form id="extend_deadline_form" name="extend_deadline_form">		
+	<div id="order-code" class="hidden">@clientOrders.order_code</div>
+	<div class="">							
+	    <legend>Extend deadline</legend> <br>	
+	    <div class="row">							
+									    
+		<div class='col-sm-5'>
+		    <div class="form-group">					
+			<div class='input-group date' id='extend-to-date-input'>
+			    <span class="input-group-addon" id="sizing-addon1">Current deadline</span>
+			    <input type="text" value="@clientOrders.order_deadline.format("YYYY-MM-dd HH:mm")" class="form-control" name ="datetimepicker" id="datetimepicker"/> 
+			</div>								
+		    </div>								
+		</div>									
+										    
+		<div class='col-sm-6'>						
+		    <div class="form-group">						
+			<div id='extend-to-date-btn'>				
+			    <button type="submit" id="btn-deadline-extension" class="btn btn-primary">
+			      Submit new deadline					
+			    </button>	
+			    <span id="loading-gif-extend" class="hidden"><img src="@routes.Assets.at("images/loading.gif")"/>Submiting...</span>
+			</div>						
+		    </div>							
+		</div>							
+									    
+	    </div>							
+	</div>									
+      </form>
+    </div>
+    
+     <!--Ask for revision -->
+    <div id="revision-form"> 
+      <form id="ask_revision_form" name="ask_revision_form" method="post" action="">
+	<legend>Ask for revision</legend>
+	<div class=""><br>
+	  <fieldset>
+	    <div class="row">									    
+		<div class='col-sm-9'>
+		    <div class="form-group">					
+			<div class='input-group' id='ask-revision-textarea-area'>
+			    <span class="input-group-addon" id="sizing-addon1">Revision instructions</span>
+			    <textarea rows="3" cols="70" name="revision_instructions" class="form-control" id="revision_instructions"></textarea>
+			</div>								
+		    </div>								
+		</div>									    
+	    </div>
+	    
+	    <div class="row">		
+		<div class='col-sm-9'>
+		    <div class="form-group">					
+			<div class='input-group date' id='extend-to-date-input'>
+			    <span class="input-group-addon" id="sizing-addon1">Revision deadline &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			    <input type="text" value="@clientOrders.order_deadline.format("YYYY-MM-dd HH:mm")" class="form-control" name ="revision_deadline" id="revision_deadline"/> 
+			</div>								
+		    </div>								
+		</div>		
+	    </div>
+	    
+	    <div class="row">
+	      <div class="col-sm-9">
+		<div class="form-group">						
+		    <div id='ask-for-revision-btn'>				
+			<input type="submit" id="btn-ask-for-revision" class="btn btn-primary" value="Send revision">
+			<span id="loading-gif-revision" class="hidden"><img src="@routes.Assets.at("images/loading.gif")"/>Submiting...</span>
+		    </div>
+		</div>
+	      </div>
+	    </div>
+	    
+	    </fieldset>
+	</div>
+      </form>
+    </div>
+    
+    <div id="feedback-form">
+      <form id="survey_feedback_form" name="survey_feedback_form" method="post" action="">
+	<div class="">
+	  <fieldset>
+	    <legend>Your feedback (Please tell us if you are satisfied with this work)</legend>
+	    <div class="col-sm-12">
+	      <input type="radio" class="feedback-survey-shared-class" name="order_survey" id="1" value="1"/> Dissatisfied  &nbsp;&nbsp;
+	      <input type="radio" class="feedback-survey-shared-class" name="order_survey" id="2" value="2"/> Slightly satisfied &nbsp;&nbsp;
+	      <input type="radio" class="feedback-survey-shared-class" name="order_survey" id="3" value="3"/> Somewhat satisfied &nbsp;&nbsp;
+	      <input type="radio" class="feedback-survey-shared-class" name="order_survey" id="4" value="4"/> Very satisfied  &nbsp;&nbsp;
+	      <input type="radio" class="feedback-survey-shared-class" name="order_survey" id="5" value="5"/> Completely satisfied &nbsp;&nbsp;
+	      <button type="submit" id="btn-submit-feedback" class="btn btn-primary">
+		Submit feedback
+	      </button>
+	      <span id="loading-gif-feedback" class="hidden"><img src="@routes.Assets.at("images/loading.gif")"/>Submiting...</span>
+	    </div>
+	  </fieldset>
+	</div>
+      </form>
+    </div>
+    
+    }										
+  }else{								
+    <strong>No order found </strong>						
+  }										
+}

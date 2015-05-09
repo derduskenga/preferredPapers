@@ -1,0 +1,16 @@
+@(field: Field, label: String = "CHANGEME", placeholder: String = "", help: String = "",divClass:String="col-sm-8",fieldcontrolattr: String ="", fieldsizing:String="",country_code:String="",area_code:String="",phone_number:String="")
+
+  <div class="form-group @if(field.hasErrors) {has-error}">
+    <label class="col-sm-3 control-label">@label</label>
+    <div class="@divClass">
+      <input type="text" 
+             class="form-control @fieldsizing" 
+             id="@field.id" 
+             name="@field.name" 
+	     value="@country_code @area_code @phone_number"
+             placeholder="@placeholder" 
+             @fieldcontrolattr/>
+      <span class="help-block">@help</span>
+      <span class="help-block">@{field.error.map { error => error.message }}</span>
+    </div>
+  </div>

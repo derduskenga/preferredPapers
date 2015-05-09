@@ -1,0 +1,21 @@
+@(field: Field, label: String = "CHANGEME", buttonNameList: Map[orders.Spacing,Boolean], help: String = "",divClass:String="col-sm-10")
+  <div class="form-group @if(field.hasErrors) {has-error}">
+    <label class="col-sm-3 control-label" for="@field.id">@label</label>
+    <div id="@(field.id + "s")" class="@divClass" >
+      @for((buttonName,isSelected) <- buttonNameList) {
+      <label class="radio-inline">
+        <input
+
+          type="radio"
+          name="@field.name"
+          id="spacing-@buttonName.factor"
+          value="@buttonName.id"
+          class="spacing-shared-class"
+          @if(isSelected) {checked} />
+	  @buttonName.spacing
+      </label>
+      }
+      <span class="help-block">@help</span>
+      <span class="help-block">@{field.error.map { error => error.message }}</span>
+    </div>
+  </div>

@@ -1,0 +1,84 @@
+@(loginForm: Form[web.Application.Login])
+@main("Timely Essay | For Quality Service")(loginForm){
+  <h3>How it works</h3>
+  <hr>
+  
+
+  <div class="row">
+      <div class="col-md-4">
+	  <p align="center" >
+	    <span class="fa fa-pencil-square-o fa-5x how-it-works"></span>
+	    <h3 class="how-it-works-text">1. Fill order form</h3>
+	  </p>
+      </div>
+      <div class="col-md-8">
+	  <ul style="list-style-type:circle">
+	    <li><span>Fill all the required fields in the order form</span></li>
+	    <li><span>For new customers, once you place your, your account will be created automatically. You will then receive an email confirmation</span></li>
+	    <li><span>For returning customers, you login to your account and then place an order by clicking 'PLACE NEW ORDER' button</span></li>
+	    <li><span>Before you pay for the order, you can preview the order and edit it if you so wish</span></li>
+	     <li><span>If needed, you will be allowed to upload additional materials once your order is created.</span></li>
+	  </ul>
+      </div>
+  </div>
+  
+  
+  <hr>
+  <div class="row">
+      <div class="col-md-4">
+	  <p align="center" >
+	    <span class="fa fa-usd fa-5x how-it-works"></span> <span class="fa fa fa-eur fa-4x how-it-works"></span></span><span class="fa fa fa-gbp fa-2x how-it-works"></span>
+	    <h3 class="how-it-works-text">2. Pay for order</h3>
+	  </p>
+      </div>      
+      <div class="col-md-8">
+	  <ul style="list-style-type:circle">
+	    <li><span>Pay for your order.</span></li>
+	    <li><span>We accept Visa, MasterCard, Discover, American Express, JCB, Dinnar card, Paypal and Debit cards.</span></li>
+	    <li><span>You can pay in USD ($), EUR (€), GBP (£) and AUD (A$).</span></li>
+	    <li><span>Your payment is procesed securely to ensure that no fraud is possible. We are protected by <u>TrustWave</u>.</span></li>
+	  </ul>
+      </div>
+  </div>
+  
+  
+  <hr>
+  
+  <div class="row">
+      <div class="col-md-4">
+	<p align="center" >
+	  <span class="fa fa fa-random fa-4x how-it-works"></span>
+	  <h3 class="how-it-works-text">3.Track order status</h3>
+	</p>
+      </div>      
+      <div class="col-md-8">
+	  <ul style="list-style-type:circle">
+	    <li><span>After you make payment, your order is assigned to our professional writers</span></li>
+	    <li><span>You will interact with our support and/or writer using our messaging system</span></li>
+	    <li><span>Our writer may send you a draft to examine while he/she completes your order</span></li>
+	  </ul>
+      </div>
+  </div>
+    
+  <hr>
+  
+  <div class="row">
+      <div class="col-md-4">
+	<p align="center" >
+	  <span class="fa fa-suitcase fa-5x how-it-works"></span>
+	  <h3 class="how-it-works-text">4. We deliver product</h3>
+	</p>
+      </div>      
+      <div class="col-md-8">
+	  <ul style="list-style-type:circle">
+	    <li><span>Once your order is completed, we notify you via email and our messaging system</span></li>
+	    <li><span>You are supposed to login and download your product</span></li>
+	    <li><span>If you are satsified, fill our feedback survey, otherwise, ask for afree revision with new deadline.</span></li>
+	  </ul>
+      </div>
+  </div>
+ <hr>
+ <div>
+    <p align="center"><a href="@controllers.web.routes.Application.newOrder()" class="btn btn-warning">IT IS EASY, I WILL PLACE MY ORDER NOW</a></p>
+ </div>
+}

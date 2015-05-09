@@ -1,0 +1,40 @@
+@(freelanceWriterList: List[models.writer.FreelanceWriter])
+@adminmain("Timely Essay | For Quality Service"){
+	<br>
+	<div id="freelance-writer" class="col-xs-10">
+		@if(!freelanceWriterList.isEmpty()){
+			<h4>All registered writers</h4>
+			
+			@if(flash.containsKey("writer-not-found")){
+				<div class="alert alert-danger">
+					@flash.get("writer-not-found")
+				</div>
+			}
+				    
+			<table class="table table-striped table-bordered" style="table-layout:fixed;">
+				<thead>
+				      <tr>
+						<th>Full name</th>
+						<th>Writer ID</th>
+						<th>Email</th>
+						<th>Phone Number</th>
+						<th>Actions</th>
+				      </tr>
+				</thead>
+				<tbody>
+					@for(freelance_writer<-freelanceWriterList){
+					<tr>
+						<td>@freelance_writer.full_name</td>
+						<td>@freelance_writer.writer_id</td>
+						<td>@freelance_writer.email</td>
+						<td>@freelance_writer.phone_number</td>
+						<td><a href="@controllers.admincontrollers.routes.AdminActions.editWriter(freelance_writer.writer_id)"><span data-toggle="tooltip" data-placement="bottom" title="Edit Writer @freelance_writer.writer_id Details"><i class="fa fa-pencil-square-o fa-lg"></i></span></a></td>
+					</tr>
+					}
+				</tbody>
+			</table>
+		}else{
+			No registered writers
+		}
+	</div>
+}

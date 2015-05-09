@@ -1,0 +1,62 @@
+@import fieldtemplates._ 
+@(addRoleForm:Form[models.admin.userpermissions.SecurityRole])(securityRoles:List[models.admin.userpermissions.SecurityRole])
+@adminmain("Admin Roles"){
+		<div class="col-xs-10"><!-- start of main body -->
+				@if(securityRoles != null){
+						@if(securityRoles.size()>0){
+							<form>
+									<legend>Admin Roles</legend>
+							</form>
+							<ul>
+								@for(securityRole <- securityRoles){
+										<div class="security-role"><li>@securityRole.name</li></div>
+								}
+							</ul>
+						}else{
+							<div class="alert alert-danger">
+									No Admin Roles Found
+							</div>
+						}
+				}else{
+					<div class="alert alert-danger">
+							No Admin Roles Found
+					</div>
+				}
+				<div class="add-role-div" @if(flash.containsKey("show_form")){style="display:none;"}>
+						<button class="btn btn-primary" onClick="alternateNewRoleView('show_form')"><span class="fa fa-plus"></span> New Admin Role</button>
+				</div>
+				<div class="add-role-form" @if(!flash.containsKey("show_form")){style="display:none;"}>
+						@if(flash.containsKey("success")){
+							<div class="alert alert-success">
+								@flash.get("success")
+							</div>
+						}
+						
+						@if(flash.containsKey("error")){
+							<div class="alert alert-danger">
+								@flash.get("error")
+							</div>
+						}
+						@helper.form(action=controllers.admincontrollers.routes.AdminActions.saveNewAdminRole(),'class->"form-horizontal"){
+									<legend>
+										Enter name of admin role.
+									</legend>
+									<fieldset>
+										@text(addRoleForm("name"),
+											label = "Security Role Name",
+											placeholder="Security Role Name"
+										)
+
+										<div class="form-group">
+											<div class="col-xs-3">
+											</div>
+											<div class="col-xs-4">
+													<input class="btn btn-primary" type="submit" value="Save Admin Role"></input>
+													<input type="button" onClick="alternateNewRoleView('show_btn')" class="btn btn-default" value="Cancel"></input>
+											</div>
+										</div> 
+									</fieldset>
+						}
+				 </div>
+		</div><!-- end of main body column -->
+}

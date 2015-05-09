@@ -1,0 +1,7 @@
+@main("Error")(null){
+	@if(flash.containsKey("error")){
+		<div class="alert alert-danger">
+			@flash.get("error")
+		</div>
+	}
+} 

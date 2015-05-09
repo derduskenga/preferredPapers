@@ -1,0 +1,297 @@
+@(activeOrders:com.avaje.ebean.Page[models.orders.Orders])(writerAssignedOrders:com.avaje.ebean.Page[models.orders.Orders])(onRevisionOrders:com.avaje.ebean.Page[models.orders.Orders])(completedOrders:com.avaje.ebean.Page[models.orders.Orders])(closedOrders:com.avaje.ebean.Page[models.orders.Orders])
+@import models.orders._
+@import models.client._
+
+@import controllers.admincontrollers._
+@adminmain("Manage Orders"){
+
+<div class="col-md-10" id="mainbody"><!-- start of main body -->
+    
+    <form name="admin_search_order_form" id="admin_search_order_form" method="post" action="@controllers.admincontrollers.routes.AdminActions.searchOrder()">
+	    Order Code #<input type="text" name="sought_order_code" id="sought_order_code" value="">
+	    <input type="submit" name="submit-sought-order-code" id="submit-sought-order-code" value="Search Order">
+    </form>
+    <br>
+   <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#new-orders">New Orders</a></li>
+        <li ><a data-toggle="tab" href="#writer-assigned-orders">Writer Assigned Orders</a></li>
+        <li ><a data-toggle="tab" href="#on-revision-orders">On Revision</a></li>
+        <li><a data-toggle="tab" href="#completed-orders">Completed Orders</a></li>
+        <li><a data-toggle="tab" href="#closed-orders">Closed Orders</a></li>
+    </ul>
+    <div class="tab-content"><!--start tab content div -->
+    <div id="new-orders" class="tab-pane fade in active"><!--Start writer assigned orders div -->
+			@if(activeOrders !=null){
+			@if(activeOrders.getList().size()>0){
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Topic</th>
+						<th>Qs/Pgs</th>
+						<th>Date</th>
+						<th>Deadline</th>
+						<th>Spacing</th>
+						<th>Refs</th>
+						<th>Style</th>
+						<th>Prefered writer</th>
+						<th>Status</th>
+						<th>Messages</th>
+						<th>Assigned Writer Id </th>
+					</tr>
+				</thead>
+				<tbody>
+						@for(order <- activeOrders.getList()){
+						    <tr>
+							<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">#@order.order_code</a></td>
+							<td>@order.topic</td>
+							<td>@order.number_of_units</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@if(order.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){@order.spacing.spacing}</td>
+							<td>@order.no_of_references</td>
+							<td>@order.writing_style</td>
+							<td>@if(order.prefered_writer.equals("")){No prefered writer}else{<span class="alert-warning">@order.prefered_writer</span>}</td>
+							<td> @if(!order.is_paid){<p class="phone-number">Not paid}else{@if(order.checkIfOrderIsFullyPaid(order)){Order fully paid}else{<p class="phone-number">Order Partially paid</p> 
+							}}</td>
+							<td> <a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(order.order_code)">@OrderMessages.getAdminOrderMessages(order.order_code).size() (<span class="phone-number"> @OrderMessages.getAdminUnreadMessages(order.order_code) Unread</span>)</a></td>
+							<td>@if(order.is_writer_assigned){@order.freelanceWriter.writer_id}else{Waiting for writer}</td>
+						    </tr>
+						}
+				</tbody>
+			</table>
+			}else{
+			<div class="alert alert-success">
+					No active orders found.
+			</div>
+			}
+			}else{
+			<div class="alert alert-success">
+					No active orders found.
+			</div>
+			}
+    </div><!--End writer assigned orders div -->   
+    <div id="writer-assigned-orders" class="tab-pane fade"><!--Start new orders div -->
+    @if(writerAssignedOrders!=null){
+    @if(writerAssignedOrders.getList().size()>0){
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Topic</th>
+						<th>Qs/Pgs</th>
+						<th>Date</th>
+						<th>Deadline</th>
+						<th>Spacing</th>
+						<th>Refs</th>
+						<th>Style</th>
+						<th>Prefered writer</th>
+						<th>Status</th>
+						<th>Messages</th>
+						<th>Assigned Writer Id </th>
+					</tr>
+				</thead>
+				<tbody>
+						@for(order <- writerAssignedOrders.getList()){
+						    <tr>
+							<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">#@order.order_code</a></td>
+							<td>@order.topic</td>
+							<td>@order.number_of_units</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@if(order.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){@order.spacing.spacing}</td>
+							<td>@order.no_of_references</td>
+							<td>@order.writing_style</td>
+							<td>@if(order.prefered_writer.equals("")){No prefered writer}else{<span class="alert-warning">@order.prefered_writer</span>}</td>
+							<td>@if(!order.is_paid){<p class="phone-number">Not paid}else{@if(order.checkIfOrderIsFullyPaid(order)){Order fully paid}else{<p class="phone-number">Order Partially paid</p> 
+							}}</td>
+							
+							<td>
+							<a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(order.order_code)">@OrderMessages.getAdminOrderMessages(order.order_code).size() (<span class="phone-number"> @OrderMessages.getAdminUnreadMessages(order.order_code) Unread</span>)</a>
+							</td>
+							
+							<td>@if(order.is_writer_assigned){@order.freelanceWriter.writer_id}else{Waiting for writer}</td>
+						    </tr>
+						}
+				</tbody>
+			</table>
+  
+    }else{
+			<div class="alert alert-success">
+					No Writer Assigned Orders found.
+			</div>
+	}
+    }else{
+    		<div class="alert alert-success">
+					No Writer Assigned Orders Found
+			</div>
+    }  
+    </div><!--End Writer Assigned orders div --> 
+    
+    <div id="on-revision-orders" class="tab-pane fade"><!--Start On Revision Orders Div -->
+    @if(onRevisionOrders!=null){
+    @if(onRevisionOrders.getList().size()>0){
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Topic</th>
+						<th>Qs/Pgs</th>
+						<th>Date</th>
+						<th>Deadline</th>
+						<th>Spacing</th>
+						<th>Refs</th>
+						<th>Style</th>
+						<th>Prefered writer</th>
+						<th>Status</th>
+						<th>Messages</th>
+						<th>Assigned Writer Id </th>
+					</tr>
+				</thead>
+				<tbody>
+						@for(order <- onRevisionOrders.getList()){
+						    <tr>
+							<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">#@order.order_code</a></td>
+							<td>@order.topic</td>
+							<td>@order.number_of_units</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@if(order.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){@order.spacing.spacing}</td>
+							<td>@order.no_of_references</td>
+							<td>@order.writing_style</td>
+							<td>@if(order.prefered_writer.equals("")){No prefered writer}else{<span class="alert-warning">@order.prefered_writer</span>}</td>
+							<td>@if(!order.is_paid){<p class="phone-number">Not paid}else{@if(order.checkIfOrderIsFullyPaid(order)){Order fully paid}else{<p class="phone-number">Order Partially paid</p> 
+							}}</td>
+							
+							<td>
+							<a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(order.order_code)">@OrderMessages.getAdminOrderMessages(order.order_code).size() (<span class="phone-number"> @OrderMessages.getAdminUnreadMessages(order.order_code) Unread</span>)</a>
+							</td>
+							
+							<td>@if(order.is_writer_assigned){@order.freelanceWriter.writer_id}else{Waiting for writer}</td>
+						    </tr>
+						}
+				</tbody>
+			</table>
+  
+    }else{
+			<div class="alert alert-success">
+					There are currently no orders on revision.
+			</div>
+	}
+    }else{
+    		<div class="alert alert-success">
+					There are currently no orders on revision.
+			</div>
+    }  
+    </div><!--End Orders On Revision Div -->
+    
+    <div id="completed-orders" class="tab-pane fade"><!--Start completed orders div -->
+    @if(completedOrders!=null){
+    @if(completedOrders.getList().size()>0){
+   
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Topic</th>
+						<th>Qs/Pgs</th>
+						<th>Date</th>
+						<th>Deadline</th>
+						<th>Spacing</th>
+						<th>Refs</th>
+						<th>Style</th>
+						<th>Prefered writer</th>
+						<th>Status</th>
+						<th>Messages</th>
+						<th>Assigned Writer Id </th>
+						<th>Approved</th>
+					</tr>
+				</thead>
+				<tbody>
+						@for(order <- completedOrders.getList()){
+						    <tr>
+							<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">#@order.order_code</a></td>
+							<td>@order.topic</td>
+							<td>@order.number_of_units</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@if(order.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){@order.spacing.spacing}</td>
+							<td>@order.no_of_references</td>
+							<td>@order.writing_style</td>
+							<td>@if(order.prefered_writer.equals("")){No prefered writer}else{<span class="alert-warning">@order.prefered_writer</span>}</td>
+							<td>@if(!order.is_paid){<p class="phone-number">Not paid}else{@if(order.checkIfOrderIsFullyPaid(order)){Order fully paid}else{<p class="phone-number">Order Partially paid</p> 
+							}}</td>
+							<td>							<a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(order.order_code)">@OrderMessages.getAdminOrderMessages(order.order_code).size() (<span class="phone-number"> @OrderMessages.getAdminUnreadMessages(order.order_code) Unread</span>)</a></td>
+							<td>@if(order.is_writer_assigned){@order.freelanceWriter.writer_id}else{Waiting for writer}</td>
+							<td>@if(order.approved){Approved}else{Not Approved}</td>
+						    </tr>
+						}
+				</tbody>
+			</table>    
+    }else{
+			<div class="alert alert-success">
+					No completed orders found.
+			</div>
+    }
+    }else{
+			<div class="alert alert-success">
+					No completed orders found.
+			</div>
+    }
+    </div><!--End completed orders div -->
+    
+    <div id="closed-orders" class="tab-pane fade"><!--Start completed orders div -->
+    @if(closedOrders!=null){
+    @if(closedOrders.getList().size()>0){
+   
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Topic</th>
+						<th>Qs/Pgs</th>
+						<th>Date</th>
+						<th>Deadline</th>
+						<th>Spacing</th>
+						<th>Refs</th>
+						<th>Style</th>
+						<th>Prefered writer</th>
+						<th>Status</th>
+						<th>Messages</th>
+						<th>Assigned Writer Id </th>
+					</tr>
+				</thead>
+				<tbody>
+						@for(order <- closedOrders.getList()){
+						    <tr>
+							<td><a href="@controllers.admincontrollers.routes.ManageOrdersActions.manageOrder(order.order_code)">#@order.order_code</a></td>
+							<td>@order.topic</td>
+							<td>@order.number_of_units</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_date,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@ManageOrdersActions.orderSupportLocalTime(order.order_deadline,session.get("admin_email")).format("dd-MM-YYYY HH:mm")</td>
+							<td>@if(order.orderDocumentType.orderCppMode.order_cpp_mode_name == OrderCppMode.CppModes.perpage){@order.spacing.spacing}</td>
+							<td>@order.no_of_references</td>
+							<td>@order.writing_style</td>
+							<td>@if(order.prefered_writer.equals("")){No prefered writer}else{<span class="alert-warning">@order.prefered_writer</span>}</td>
+							<td>@if(!order.is_paid){<span class="phone-number">NOT PAID</span>}else{PAID}</td>
+							<td>							<a href="@controllers.admincontrollers.routes.ManageOrdersActions.orderMessages(order.order_code)">@OrderMessages.getAdminOrderMessages(order.order_code).size() (<span class="phone-number"> @OrderMessages.getAdminUnreadMessages(order.order_code) Unread</span>)</a></td>
+							<td>@if(order.is_writer_assigned){@order.freelanceWriter.writer_id}else{Waiting for writer}</td>
+						    </tr>
+						}
+				</tbody>
+			</table>    
+    }else{
+			<div class="alert alert-success">
+					No closed orders found.
+			</div>
+    }
+    }else{
+			<div class="alert alert-success">
+					No closed orders found.
+			</div>
+    }
+    </div><!--End completed orders div -->
+    
+    </div><!--end tab content -->
+</div><!-- end of main body column -->
+}

@@ -1,0 +1,50 @@
+@import fieldtemplates._
+@import helper._
+@(preferredWriterForm: Form[controllers.web.client.ClientActions.PreferredWriterForm])(preferredWriters: List[models.client.PreferredWriter])
+@clientmain("Timely Essay | Preferred Writers"){		
+		<div><!--Start preferred writers div -->
+				<h3>Enjoyed working with any specific writer? Add their ID to your preferred writers so you can access it with ease when you return.</h3>
+				<hr/>
+				@if(preferredWriters.isEmpty){
+					<p>You do not have any preferred writers.</p>
+				}else{
+					<p>These are your preferred writers</p>
+					<div class="preferred-writers-list">
+						@for(prefWriter <- preferredWriters){
+								<li>@prefWriter.freelanceWriter.writer_id</li>
+						}
+					</div>
+				}
+				<div class="add-preferred-writer-div" 	@if(flash.containsKey("show_form")){style="display:none"}>
+						<button class="btn add-preferred-writer-btn" onClick="alternateAddWriterView('add_btn');"><span class="fa fa-plus"></span>Add Preferred Writer</button>
+				</div>
+				<div class="add-preferred-writer-form-div" @if(!flash.containsKey("show_form")){style="display:none"}>
+						@if(flash.containsKey("writer_added_success")){
+							<div class="alert alert-success">
+								@flash.get("writer_added_success")
+							</div>
+						}
+					
+						@if(flash.containsKey("writer_not_found_error")){
+							<div class="alert alert-danger">
+								@flash.get("writer_not_found_error")
+							</div>
+						}
+					@helper.form(action=controllers.web.client.routes.ClientActions.savePreferredWriter(), 
+																		'class->"form-horizontal", 'id-> "add-preferred-writer-form"){
+											
+						@fieldtemplates.preferedwritertext(preferredWriterForm("writer_id"),
+											label = "",
+											placeholder="Writer ID")
+
+						<div class="form-group" style="float:right">
+											<input type="submit" class="btn btn-primary" value="Save">
+											<input type="button" onClick="alternateAddWriterView('cancel_btn');" class="btn btn-default" value="Cancel">
+						</div>
+					
+					}	
+				</div>
+				
+				</div><!-- End preferred writers div -->
+}
+ 

@@ -1,0 +1,26 @@
+@(order:models.orders.Orders)
+@import models.orders._ 
+@clientmain("Timely Essay:Pay For Order"){
+    <br>
+    <div class="col-md-10" id="pay-order-response">
+	      
+	    @if(flash.containsKey("orderpaymentsuccessresponse")){
+		  <div class="alert alert-success">
+			  @flash.get("orderpaymentsuccessresponse")
+		  </div>
+		}
+		
+	    @if(flash.containsKey("orderpaymentfailresponse")){
+		  <div class="alert alert-danger">
+			  @flash.get("orderpaymentfailresponse")
+		  </div>
+		}
+		
+	    @if(order !=null){
+		  <p><a href="@controllers.web.client.routes.ClientActions.index()">&lt;&lt;Back to orders</a></p>
+	    }else{
+	    
+	    }
+    </div>
+
+}

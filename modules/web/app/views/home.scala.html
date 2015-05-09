@@ -1,0 +1,51 @@
+@(loginForm: Form[web.Application.Login])
+@main("Timely Essay | For Quality Service")(loginForm){		
+		@if(flash.containsKey("error")){
+			<div class="alert alert-danger">
+				@flash.get("error")
+			</div>
+		}
+		<div class="text-justify" id="home-content">
+		  <h3>You have Found your Best Study Helper</h3>
+		  
+		  <p>At <b>Timelyessay.com</b>, we make it simpler than ever to get your work done with the help of proficient and prolific writers who have ample professional experience. We are committed to delivery of plagiarism free papers, devoid  of any grammatical errors, that have ardent research  data based on facts so as to give your work  enough credibility and eminence.</p>
+	  
+		  <p>With our express response to emails, excellent legitimacy, assured confidentiality, free revision and responsive support, Timelyessay.com is definitely your number one site where all your professional and academic writing challenges can be solved. We consider our clients' urgency so you don't have to worry about that paper with a short notice. Our pricing policies are also quite favorable, so again you don’t have to get jitters about the cost you will incur. </p>
+
+		  <p> All the criteria of good writing are followed to the letter. These include; proper citations and referencing styles, accuracy, objectivity, explicitness, precision, formality, coherence and cohesion among others. </p>
+
+		  <p>We also dwell more on quality rather than quantity. As much as the work must have content, relevance and contexts are paramount. That is why we engage writers who are very enthusiastic about writing so that they can devote ample time to attend to your work with no haste. This way, you will be assured of well organized and error-free work. Our writers are well remunerated and motivated in a bid for better performance. </p>
+		  
+		  <div>
+		    <p align="center"><a href="@controllers.web.routes.Application.newOrder()" class="btn btn-warning">&nbsp;&nbsp;&nbsp;Order Now&nbsp;&nbsp;&nbsp;</a></p>
+		  </div>
+
+		  <h3>Wide range of writing services</h3> 
+
+		  <p>Our expert writers specialize in wide range of writing styles and because of the work we deliver; we stand out from the rest of other writing companies. All our writers care about quality. We write graduate school papers, PhD dissertations, theses and research proposals, college-level papers, high school essays, university-level papers, honors thesis writing, MBA papers and many others.</p>
+
+		  <p>We help our clients with good study content in all types of writing, be it for graduate school papers, PhD dissertations, theses and proposal writing, college-level papers, high school essays, university-level papers, honors thesis writing, MBA papers and many others. Our expertise ranges from Biology, Chemistry, Business, Biology, Astronomy, Accounting, Anthropology, Art, Architecture, Criminology, Education, Economics, English, Geography, Finance, Internet Technologies, History, Literature, Linguistics, Marketing, Management, Medicine, Mathematics, Music, Philosophy Nursing, Political Science, Philosophy, Psychology, Sociology, Religious Studies, Statistics, Sociology, Information Technology (IT), Computer Programming and Other Sciences   This shows that we have specialist from all diverse fields  who are at least bachelors degree holders. It is our core value to hiring the finest writers so as to deliver the best since we believe in customer satisfaction.</p>
+		  <h3>Quality defines us</h3>
+		  
+		  <p>Our writers have exceptional experience in producing all kinds of papers.  We deliver high quality papers and we emphasize on delivering beyond our customers' expectations. Our writers are specialists from different fields, with at least a bachelor’s degree. Our company hires the best writers who in turn deliver the best content to our customers. The papers we deliver to our customers are precise, clear and meet all their requirements</p>
+
+		  <h3>We have the best support</h3>
+
+		  <p>Our Company provides 24/7 assistance to our customers. You do not need to worry no matter how urgent your need is; we will take care of it. Our support team is responsive and is always available whenever you are in need. We provide our client with timely notifications on the progress of their papers. Timelyessay.com offers live chat where our customer support representatives address your issues instantly.</p> 
+
+		  <h3>Confidentiality</h3>
+
+		  <p>With our service, you do not need to worry of anyone knowing that you used our writing services. However, we encourage our customers to refer their friends with similar needs. You will surely be rewarded in our affiliate program. With us, you are sure that your personal information won't be shared with anyone. This is clearely stipulated in our privacy policy.</p>
+
+		  <h3>Originality</h3> 
+		  
+		  <p>Timelyessay.com treats originality with seriousness. Our papers are written from scratch and checked by our editors for grammatical errors and to ensure they meet your unique requirements. We also check the work for plagiarism using specialized software.</p>
+
+		  <h3>Revisions</h3>
+
+		  <p>We are confident that we will meet your requirements. Our mission is to ensure 100% satisfaction by producing high quality papers. We also guarantee unlimited revisions at no extra penny. All revisions are completed in a timely manner.</p>
+		  <div>
+		    <p align="center"><a href="@controllers.web.routes.Application.newOrder()" class="btn btn-warning">&nbsp;&nbsp;&nbsp;Order Now&nbsp;&nbsp;&nbsp;</a></p>
+		  </div>
+		</div>
+}

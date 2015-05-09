@@ -1,0 +1,37 @@
+@(freelanceWriterForm: Form[models.writer.FreelanceWriter])
+@adminmain("Timely Essay | For Quality Service"){
+	<br>
+	<div id="freelance-writer-form" class="col-xs-10">
+		<div class="new-msg-div row">
+			    @helper.form(action=controllers.admincontrollers.routes.AdminActions.saveWriter(),'class->"form-horizontal",'id->"freelancewriterform", 'name->"freelancewriterform"){ 
+				    <input type="hidden"  value="@freelanceWriterForm("freelance_writer_id").valueOr("")" name="freelance_writer_id"/>
+				    <h4>Register new writer:</h4>
+			
+				    @if(flash.containsKey("writer-registered")){
+					    <div class="alert alert-success">
+						    @flash.get("writer-registered")
+					    </div>
+				    }
+		
+				    @fieldtemplates.text2(freelanceWriterForm("full_name"),
+									    label = "Full Name: ",
+									    placeholder="Writer full names...")
+									    
+				    @fieldtemplates.text2(freelanceWriterForm("email"),
+									    label = "Email Address: ",
+									    placeholder="Email address...")
+									    
+				    @fieldtemplates.text2(freelanceWriterForm("phone_number"),
+									    label = "Phone number: ",
+									    placeholder="Phone number...")
+									    
+				    <div class="form-group" style="float:right">
+						<input type="submit" class="btn btn-primary" value="Save User">
+						<input type="reset" id="add-freelance-writer-cancel-btn" class="btn btn-default" value="Cancel">
+				    </div>
+					      
+				    
+			    }
+		</div>
+	</div>
+}

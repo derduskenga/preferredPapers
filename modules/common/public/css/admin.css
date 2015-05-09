@@ -1,0 +1,66 @@
+admin-main-content/* make sidebar nav vertical */ 
+
+  .sidebar-nav .navbar .navbar-collapse {
+    padding: 0;
+    max-height: none;
+  }
+  .sidebar-nav .navbar ul {
+    float: none;
+  }
+  .sidebar-nav .navbar ul:not {
+    display: block;
+  }
+  .sidebar-nav .navbar li {
+    float: none;
+    display: block;
+  }
+  .sidebar-nav .navbar li a {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .form-control{
+    border-radius:5px;
+   /* box-shadow: 5px 0px 1px 0px; */
+  }
+#intro-userform{
+  background-color:#e6e6e6;
+  border-color:#2a6496;
+  border-radius: 20px;
+  border-style: solid;
+  border-width: 1px;
+
+}
+#navigation>li{
+
+  border-color:#2a6496;
+  border-width:1px;
+  
+  border-style: solid;
+  border-radius: 5px;
+
+}
+
+.admin-main-content{
+	margin-right: 22px;
+}
+
+.activation-link{
+	 cursor: pointer;
+}
+
+.admin-logout{
+	float:right;
+}
+
+.file-download-icon{
+	margin-left: 5px;
+}
+
+#orderFileForm{
+	margin-top:10px;
+}
+
+.container{
+  max-width: none !important;
+  width:1170px;
+}
